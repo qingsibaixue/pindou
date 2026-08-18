@@ -219,4 +219,21 @@ export class BeanBoard extends Component {
       }
     });
   }
+
+  public tryFillByLocalPosition(local: Vec3): boolean {
+    if (!this._level) {
+      return false;
+    }
+
+    const width = this._level.cols * this.cellSize;
+    const height = this._level.rows * this.cellSize;
+
+    const localX = local.x + width * 0.5;
+    const localY = height * 0.5 - local.y;
+
+    const col = Math.floor(localX / this.cellSize);
+    const row = Math.floor(localY / this.cellSize);
+
+    return this.tryFill(row, col);
+  }
 }
