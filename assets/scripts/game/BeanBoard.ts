@@ -1,79 +1,127 @@
+// assets/scripts/game/BeanBoard.ts
+
 import {
   _decorator,
   Component,
   Prefab,
   instantiate,
   Color,
-  Node,
   UITransform,
   Vec3,
 } from "cc";
 
-import { FlyingBean } from "./FlyingBean";
-import { BeanTray } from "./BeanTray";
-
-import { EMPTY_COLOR, LevelData } from "../data/LevelData";
+import {
+  EMPTY_COLOR,
+  LevelData,
+  BoardCellData,
+  DEFAULT_LEVEL,
+  getCellIndex,
+  isInsideBoard,
+} from "../data/LevelData";
 
 import { BeanCell } from "./BeanCell";
 
 const { ccclass, property } = _decorator;
 
-const TEST_LEVEL: LevelData = {
-  id: "test_001",
-  name: "Test",
-
-  rows: 10,
-  cols: 10,
-
-  colors: [
-    { id: 0, hex: "#42D7D0" },
-    { id: 1, hex: "#20C75A" },
-  ],
-
-  cells: [
-    -1, -1, 0, 0, -1, -1, 0, 0, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
-    0, -1, -1, -1, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, -1,
-    -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  ],
-
-  beanCounts: {
-    0: 50,
-  },
-};
-
+/**
+ * BeanBoard
+ *
+ * 职责：
+ *
+ * 1. 根据 LevelData 创建棋盘。
+ * 2. 管理所有 BeanCell。
+ * 3. 处理棋盘点击。
+ * 4. 查找“可移动的同色连通棋子组”。
+ * 5. 查找棋盘空槽。
+ *
+ *
+ * 最重要的规则：
+ *
+ * 已经匹配正确的棋子：
+ *
+ * beanColorId === targetColorId
+ *
+ * 属于完成状态。
+ *
+ * 它：
+ *
+ * - 不能被点击悬浮
+ * - 不能进入 Flood Fill
+ * - 不能被其它同色连通块穿过
+ */
 @ccclass("BeanBoard")
 export class BeanBoard extends Component {
+  // =========================================================
+  // Inspector
+  // =========================================================
+
   @property(Prefab)
   cellPrefab: Prefab | null = null;
 
   @property
   cellSize = 40;
 
-  @property(Prefab)
-  flyingBeanPrefab: Prefab | null = null;
-
-  @property(Node)
-  flyingLayer: Node | null = null;
-
-  @property(BeanTray)
-  beanTray: BeanTray | null = null;
+  // =========================================================
+  // Runtime
+  // =========================================================
 
   private _level: LevelData | null = null;
 
+  /**
+   * index =
+   * row * cols + col
+   */
   private _cells: Array<BeanCell | null> = [];
 
-  private _remainingCount = 0;
+  /**
+   * 玩家点击一个可移动棋子后：
+   *
+   * BeanBoard 找到整组同色连通块，
+   * 再交给 GameController。
+   */
+  public onBeanGroupClick: ((cells: BeanCell[]) => void) | null = null;
+
+  /**
+   * 点击棋盘空槽。
+   *
+   * 后续：
+   *
+   * Floating Group
+   * →
+   * Board
+   */
+  public onEmptyCellClick: ((cell: BeanCell) => void) | null = null;
+
+  // =========================================================
+  // Lifecycle
+  // =========================================================
 
   protected start(): void {
-    this.loadLevel(TEST_LEVEL);
+    this.loadLevel(DEFAULT_LEVEL);
   }
+
+  // =========================================================
+  // Level
+  // =========================================================
 
   public loadLevel(level: LevelData): void {
     this.clear();
 
     this._level = level;
+
+    const expectedCount = level.rows * level.cols;
+
+    if (level.cells.length !== expectedCount) {
+      console.error(
+        `[BeanBoard] invalid level cells count. expected=${expectedCount}, actual=${level.cells.length}`,
+      );
+
+      return;
+    }
+
+    // =====================================================
+    // Board Size
+    // =====================================================
 
     const width = level.cols * this.cellSize;
 
@@ -81,32 +129,44 @@ export class BeanBoard extends Component {
 
     const transform = this.getComponent(UITransform);
 
-    transform?.setContentSize(width, height);
+    if (transform) {
+      transform.setContentSize(width, height);
+    }
 
-    this._cells = new Array(level.rows * level.cols).fill(null);
+    // =====================================================
+    // Cell Array
+    // =====================================================
 
-    this._remainingCount = 0;
+    this._cells = new Array(expectedCount).fill(null);
+
+    // =====================================================
+    // Build
+    // =====================================================
 
     for (let row = 0; row < level.rows; row++) {
       for (let col = 0; col < level.cols; col++) {
-        const index = row * level.cols + col;
+        const index = getCellIndex(row, col, level.cols);
 
-        const colorId = level.cells[index];
+        const data = level.cells[index];
 
-        if (colorId === EMPTY_COLOR) {
-          continue;
-        }
-
-        this.createCell(row, col, colorId);
-
-        this._remainingCount++;
+        this.createCell(row, col, data);
       }
     }
 
-    console.log(`[BeanBoard] remaining = ${this._remainingCount}`);
+    console.log(
+      `[BeanBoard] level loaded rows=${level.rows}, cols=${level.cols}`,
+    );
+
+    console.log(
+      `[BeanBoard] beans=${this.getBeanCount()}, mismatched=${this.getMismatchedCount()}`,
+    );
   }
 
-  private createCell(row: number, col: number, colorId: number): void {
+  // =========================================================
+  // Create Cell
+  // =========================================================
+
+  private createCell(row: number, col: number, data: BoardCellData): void {
     if (!this._level || !this.cellPrefab) {
       return;
     }
@@ -114,6 +174,10 @@ export class BeanBoard extends Component {
     const node = instantiate(this.cellPrefab);
 
     node.parent = this.node;
+
+    // =====================================================
+    // Position
+    // =====================================================
 
     const width = this._level.cols * this.cellSize;
 
@@ -125,24 +189,54 @@ export class BeanBoard extends Component {
 
     node.setPosition(x, y, 0);
 
+    // =====================================================
+    // BeanCell
+    // =====================================================
+
     const cell = node.getComponent(BeanCell);
 
     if (!cell) {
+      console.warn(`[BeanBoard] BeanCell missing row=${row}, col=${col}`);
+
+      node.destroy();
+
       return;
     }
 
-    const config = this._level.colors.find((value) => value.id === colorId);
+    // =====================================================
+    // Colors
+    // =====================================================
 
-    const color = config ? new Color().fromHEX(config.hex) : Color.WHITE;
+    const targetColor = this.getColor(data.targetColorId);
 
-    cell.setup(row, col, colorId, color);
+    let beanColor: Color | null = null;
 
-    const index = row * this._level.cols + col;
+    if (data.beanColorId !== EMPTY_COLOR) {
+      beanColor = this.getColor(data.beanColorId);
+    }
+
+    // =====================================================
+    // Setup
+    // =====================================================
+
+    cell.setup(row, col, data, targetColor, beanColor);
+
+    const index = getCellIndex(row, col, this._level.cols);
 
     this._cells[index] = cell;
   }
 
-  public tryFillByLocalPosition(local: Vec3): boolean {
+  // =========================================================
+  // Input
+  // =========================================================
+
+  /**
+   * BeanInput 调用。
+   *
+   * local：
+   * Board 本地坐标。
+   */
+  public handleClickByLocalPosition(local: Vec3): boolean {
     if (!this._level) {
       return false;
     }
@@ -159,167 +253,357 @@ export class BeanBoard extends Component {
 
     const row = Math.floor(localY / this.cellSize);
 
-    return this.tryFill(row, col);
+    return this.handleCellClick(row, col);
   }
 
-  public tryFill(row: number, col: number): boolean {
-    if (!this._level) {
-      return false;
-    }
-
-    if (
-      row < 0 ||
-      row >= this._level.rows ||
-      col < 0 ||
-      col >= this._level.cols
-    ) {
-      return false;
-    }
-
-    const index = row * this._level.cols + col;
-
-    const cell = this._cells[index];
+  /**
+   * 真正的棋盘点击。
+   */
+  public handleCellClick(row: number, col: number): boolean {
+    const cell = this.getCell(row, col);
 
     if (!cell) {
       return false;
     }
 
-    /**
-     * Flying 状态防止玩家
-     * 在飞豆期间重复点同一格。
-     */
-    if (!cell.beginFill()) {
-      return false;
+    // =====================================================
+    // Empty Cell
+    // =====================================================
+
+    if (!cell.hasBean) {
+      console.log(
+        `[BeanBoard] empty cell click row=${row}, col=${col}, targetColorId=${cell.targetColorId}`,
+      );
+
+      this.onEmptyCellClick?.(cell);
+
+      return true;
     }
 
+    // =====================================================
+    // Matched Cell
+    // =====================================================
+
     /**
-     * 托盘已经空了。
+     * 已经完成的棋子：
      *
-     * 第一版先自动补满。
-     * 后面可以换成补豆动画。
+     * 不能悬浮。
+     *
+     * 这一条就是这次最重要的修改之一。
      */
-    if (this.beanTray && this.beanTray.isEmpty) {
-      this.beanTray.refill(cell.beanColor);
-    }
-
-    /**
-     * 真正开始飞豆。
-     */
-    const success = this.flyBeanToCell(cell);
-
-    /**
-     * 如果托盘或 Prefab
-     * 出问题导致没飞成功，
-     * 要把 Cell 状态退回去。
-     */
-    if (!success) {
-      cell.cancelFill();
+    if (cell.isMatched) {
+      console.log(
+        `[BeanBoard] matched bean locked row=${row}, col=${col}, colorId=${cell.beanColorId}`,
+      );
 
       return false;
     }
+
+    // =====================================================
+    // Movable Bean
+    // =====================================================
+
+    const group = this.findConnectedBeans(row, col);
+
+    if (group.length <= 0) {
+      return false;
+    }
+
+    console.log(
+      `[BeanBoard] movable bean group click colorId=${cell.beanColorId}, count=${group.length}`,
+    );
+
+    this.onBeanGroupClick?.(group);
 
     return true;
+  }
+
+  // =========================================================
+  // Flood Fill
+  // =========================================================
+
+  /**
+   * 查找：
+   *
+   * 上下左右相邻
+   * +
+   * beanColorId 相同
+   * +
+   * 当前棋子还没有匹配底色
+   *
+   * 的连通块。
+   *
+   *
+   * 非常重要：
+   *
+   * 已经 matched 的棋子属于“锁死棋子”。
+   *
+   * 即使它颜色相同，
+   * 也不能加入连通块。
+   */
+  public findConnectedBeans(startRow: number, startCol: number): BeanCell[] {
+    if (!this._level) {
+      return [];
+    }
+
+    const startCell = this.getCell(startRow, startCol);
+
+    if (!startCell || !startCell.hasBean) {
+      return [];
+    }
+
+    /**
+     * 起点已经匹配：
+     *
+     * 不允许悬浮。
+     */
+    if (startCell.isMatched) {
+      return [];
+    }
+
+    const targetBeanColorId = startCell.beanColorId;
+
+    const result: BeanCell[] = [];
+
+    const queue: Array<{
+      row: number;
+      col: number;
+    }> = [
+      {
+        row: startRow,
+
+        col: startCol,
+      },
+    ];
+
+    const visited = new Set<number>();
+
+    const directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+
+      if (
+        !isInsideBoard(
+          current.row,
+          current.col,
+          this._level.rows,
+          this._level.cols,
+        )
+      ) {
+        continue;
+      }
+
+      const index = getCellIndex(current.row, current.col, this._level.cols);
+
+      if (visited.has(index)) {
+        continue;
+      }
+
+      visited.add(index);
+
+      const cell = this._cells[index];
+
+      if (!cell || !cell.hasBean) {
+        continue;
+      }
+
+      // ===================================================
+      // MATCHED = WALL
+      // ===================================================
+
+      /**
+       * 已经匹配完成的棋子：
+       *
+       * 不能被拿起来。
+       *
+       * 而且这里直接 continue，
+       * 所以不会继续从它向四周扩散。
+       *
+       * 它相当于 Flood Fill 的墙。
+       */
+      if (cell.isMatched) {
+        continue;
+      }
+
+      // ===================================================
+      // Color
+      // ===================================================
+
+      if (cell.beanColorId !== targetBeanColorId) {
+        continue;
+      }
+
+      // ===================================================
+      // Add
+      // ===================================================
+
+      result.push(cell);
+
+      // ===================================================
+      // Expand
+      // ===================================================
+
+      for (const direction of directions) {
+        queue.push({
+          row: current.row + direction[0],
+
+          col: current.col + direction[1],
+        });
+      }
+    }
+
+    return result;
+  }
+
+  // =========================================================
+  // Query
+  // =========================================================
+
+  public getCell(row: number, col: number): BeanCell | null {
+    if (!this._level) {
+      return null;
+    }
+
+    if (!isInsideBoard(row, col, this._level.rows, this._level.cols)) {
+      return null;
+    }
+
+    const index = getCellIndex(row, col, this._level.cols);
+
+    return this._cells[index] ?? null;
+  }
+
+  // =========================================================
+  // Board Counts
+  // =========================================================
+
+  public getBeanCount(): number {
+    let count = 0;
+
+    for (const cell of this._cells) {
+      if (cell?.hasBean) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  public getMismatchedCount(): number {
+    let count = 0;
+
+    for (const cell of this._cells) {
+      if (cell?.isMismatched) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  public getMatchedCount(): number {
+    let count = 0;
+
+    for (const cell of this._cells) {
+      if (cell?.isMatched) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**
-   * 从 BeanTray 取一颗真实的豆，
-   * 然后让 FlyingBean 从对应槽位飞向目标。
+   * 关卡是否全部完成。
+   *
+   * 只要还有错位棋子：
+   *
+   * false
    */
-  private flyBeanToCell(cell: BeanCell): boolean {
-    if (!this.flyingBeanPrefab || !this.flyingLayer || !this.beanTray) {
-      console.warn("[BeanBoard] flying references missing");
+  public get isCompleted(): boolean {
+    return this.getMismatchedCount() === 0;
+  }
 
-      return false;
-    }
+  // =========================================================
+  // Empty Target Query
+  // =========================================================
 
-    /**
-     * BeanTray 内部自己决定
-     * 到底从哪个 BeanSlot 取。
-     *
-     * BeanBoard 不需要知道 Slot 细节。
-     */
-    const spawnWorldPosition = this.beanTray.takeBean();
+  /**
+   * 获取：
+   *
+   * 当前没有棋子
+   * +
+   * 底色 == colorId
+   *
+   * 的所有棋盘空槽。
+   */
+  public getEmptyCellsByColor(colorId: number): BeanCell[] {
+    const result: BeanCell[] = [];
 
-    if (!spawnWorldPosition) {
-      console.warn("[BeanBoard] no bean available in tray");
-
-      return false;
-    }
-
-    const flyingNode = instantiate(this.flyingBeanPrefab);
-
-    flyingNode.parent = this.flyingLayer;
-
-    const flyingLayerTransform = this.flyingLayer.getComponent(UITransform);
-
-    if (!flyingLayerTransform) {
-      console.warn("[BeanBoard] FlyingLayer needs UITransform");
-
-      flyingNode.destroy();
-
-      return false;
-    }
-
-    /**
-     * 托盘 Slot 的世界坐标
-     * 转 FlyingLayer 本地坐标。
-     */
-    const startLocal =
-      flyingLayerTransform.convertToNodeSpaceAR(spawnWorldPosition);
-
-    /**
-     * 目标 BeanCell 世界坐标
-     * 转 FlyingLayer 本地坐标。
-     */
-    const targetLocal = flyingLayerTransform.convertToNodeSpaceAR(
-      cell.node.worldPosition,
-    );
-
-    flyingNode.setPosition(startLocal);
-
-    const flyingBean = flyingNode.getComponent(FlyingBean);
-
-    if (!flyingBean) {
-      console.warn("[BeanBoard] FlyingBean component missing");
-
-      flyingNode.destroy();
-
-      return false;
-    }
-
-    /**
-     * 飞行豆颜色与目标格一致。
-     */
-    flyingBean.setup(cell.beanColor);
-
-    flyingBean.flyTo(targetLocal, () => {
-      /**
-       * 飞豆真正到达后，
-       * 目标格才切换 Filled。
-       */
-      cell.fill();
-
-      this._remainingCount--;
-
-      console.log(`[BeanBoard] remaining = ${this._remainingCount}`);
-
-      if (this._remainingCount <= 0) {
-        this.onLevelComplete();
+    for (const cell of this._cells) {
+      if (!cell) {
+        continue;
       }
-    });
 
-    return true;
+      if (cell.canPlaceBean(colorId)) {
+        result.push(cell);
+      }
+    }
+
+    return result;
   }
 
-  private onLevelComplete(): void {
-    console.log("LEVEL COMPLETE!");
+  // =========================================================
+  // Color
+  // =========================================================
+
+  public getColor(colorId: number): Color {
+    if (!this._level) {
+      return Color.WHITE.clone();
+    }
+
+    const config = this._level.colors.find((item) => item.id === colorId);
+
+    if (!config) {
+      console.warn(`[BeanBoard] color config missing id=${colorId}`);
+
+      return Color.WHITE.clone();
+    }
+
+    return new Color().fromHEX(config.hex);
   }
+
+  // =========================================================
+  // Getter
+  // =========================================================
+
+  public get level(): LevelData | null {
+    return this._level;
+  }
+
+  public get rows(): number {
+    return this._level?.rows ?? 0;
+  }
+
+  public get cols(): number {
+    return this._level?.cols ?? 0;
+  }
+
+  // =========================================================
+  // Clear
+  // =========================================================
 
   private clear(): void {
     this.node.removeAllChildren();
 
     this._cells.length = 0;
 
-    this._remainingCount = 0;
+    this._level = null;
   }
 }

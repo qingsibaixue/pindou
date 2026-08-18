@@ -7,68 +7,59 @@ export class FlyingBean extends Component {
   @property(Sprite)
   sprite: Sprite | null = null;
 
-  public setup(color: Color): void {
-    if (this.sprite) {
-      this.sprite.color = color;
-    }
+  /**
+   * 当前这颗运行时棋子的颜色。
+   */
+  private _beanColor: Color = Color.WHITE.clone();
+
+  /**
+   * 对外提供颜色。
+   */
+  public get beanColor(): Color {
+    return this._beanColor.clone();
   }
 
   /**
-   * 注意：
-   * 这里传入的 targetPosition 是 FlyingLayer 下的“本地坐标”
-   * 不再使用 worldPosition 做 tween。
+   * 初始化棋子。
    */
-  public flyTo(targetPosition: Vec3, onComplete: () => void): void {
-    const start = this.node.position.clone();
+  public setup(color: Color): void {
+    this._beanColor = color.clone();
 
-    console.log("[FlyingBean] local start:", start, "target:", targetPosition);
+    if (this.sprite) {
+      this.sprite.color = this._beanColor;
 
-    // 先明显抬起来
-    const liftPoint = new Vec3(start.x, start.y + 80, 0);
+      this.sprite.node.active = true;
+    }
 
-    // 中间形成弧线
-    const arcPoint = new Vec3(
-      (start.x + targetPosition.x) * 0.5,
-      Math.max(start.y, targetPosition.y) + 160,
-      0,
-    );
+    this.node.setScale(Vec3.ONE);
+  }
 
-    this.node.setScale(0.8, 0.8, 1);
+  /**
+   * 从当前位置飞向目标。
+   *
+   * targetPosition 必须和当前 FlyingBean
+   * 使用同一个父节点本地坐标系。
+   *
+   * 当前项目里通常就是：
+   * FloatingBeanQueue / beanLayer。
+   */
+  public flyTo(target: Vec3, onComplete?: () => void): void {
+    tween(this.node).stop();
 
     tween(this.node)
       .to(
-        0.12,
+        0.18,
         {
-          position: liftPoint,
-          scale: new Vec3(1.1, 1.1, 1),
+          position: target,
         },
         {
           easing: "quadOut",
         },
       )
-      .to(
-        0.25,
-        {
-          position: arcPoint,
-        },
-        {
-          easing: "sineOut",
-        },
-      )
-      .to(
-        0.22,
-        {
-          position: targetPosition.clone(),
-          scale: Vec3.ONE,
-        },
-        {
-          easing: "quadIn",
-        },
-      )
       .call(() => {
         console.log("[FlyingBean] arrived");
 
-        onComplete();
+        onComplete?.();
 
         this.node.destroy();
       })

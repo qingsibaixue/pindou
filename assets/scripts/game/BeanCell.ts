@@ -8,33 +8,32 @@ import {
   tween,
 } from "cc";
 
-const { ccclass, property } = _decorator;
+import { EMPTY_COLOR, BoardCellData } from "../data/LevelData";
 
-export enum BeanState {
-  Empty,
-  Preview,
-  Flying,
-  Filled,
-}
+const { ccclass, property } = _decorator;
 
 @ccclass("BeanCell")
 export class BeanCell extends Component {
   @property(Sprite)
-  sprite: Sprite | null = null;
+  baseSprite: Sprite | null = null;
+
+  @property(Sprite)
+  beanSprite: Sprite | null = null;
 
   @property(SpriteFrame)
-  previewSpriteFrame: SpriteFrame | null = null;
+  baseSpriteFrame: SpriteFrame | null = null;
 
   @property(SpriteFrame)
-  filledSpriteFrame: SpriteFrame | null = null;
+  beanSpriteFrame: SpriteFrame | null = null;
 
   private _row = 0;
-
   private _col = 0;
 
-  private _colorId = -1;
+  private _targetColorId = EMPTY_COLOR;
 
-  private _state: BeanState = BeanState.Empty;
+  private _beanColorId = EMPTY_COLOR;
+
+  private _beanColor = Color.WHITE.clone();
 
   public get row(): number {
     return this._row;
@@ -44,97 +43,157 @@ export class BeanCell extends Component {
     return this._col;
   }
 
-  public get colorId(): number {
-    return this._colorId;
+  public get targetColorId(): number {
+    return this._targetColorId;
   }
 
-  public get state(): BeanState {
-    return this._state;
+  public get beanColorId(): number {
+    return this._beanColorId;
   }
 
-  public get beanColor(): Color {
-    if (!this.sprite) {
-      return Color.WHITE.clone();
-    }
-
-    return this.sprite.color.clone();
+  public get hasBean(): boolean {
+    return this._beanColorId !== EMPTY_COLOR;
   }
 
-  public getWorldPosition(): Vec3 {
-    return this.node.worldPosition.clone();
+  public get isMatched(): boolean {
+    return this.hasBean && this._beanColorId === this._targetColorId;
   }
 
-  public setup(row: number, col: number, colorId: number, color: Color): void {
+  public get isMismatched(): boolean {
+    return this.hasBean && this._beanColorId !== this._targetColorId;
+  }
+
+  public setup(
+    row: number,
+    col: number,
+    data: BoardCellData,
+    targetColor: Color,
+    beanColor: Color | null,
+  ): void {
     this._row = row;
     this._col = col;
-    this._colorId = colorId;
 
-    if (this.sprite) {
-      this.sprite.color = color;
+    this._targetColorId = data.targetColorId;
+
+    this._beanColorId = data.beanColorId;
+
+    if (beanColor) {
+      this._beanColor = beanColor.clone();
     }
 
-    this.setState(BeanState.Preview);
+    if (this.baseSprite) {
+      this.baseSprite.node.active = true;
+
+      this.baseSprite.spriteFrame = this.baseSpriteFrame;
+
+      this.baseSprite.color = targetColor;
+    }
+
+    this.refreshBeanVisual();
   }
 
-  public setState(state: BeanState): void {
-    this._state = state;
-
-    if (!this.sprite) {
+  private refreshBeanVisual(): void {
+    if (!this.beanSprite) {
       return;
     }
 
-    switch (state) {
-      case BeanState.Preview:
-        this.sprite.spriteFrame = this.previewSpriteFrame;
-        break;
+    this.beanSprite.node.active = this.hasBean;
 
-      case BeanState.Filled:
-        this.sprite.spriteFrame = this.filledSpriteFrame;
-        break;
+    if (!this.hasBean) {
+      return;
     }
+
+    this.beanSprite.spriteFrame = this.beanSpriteFrame;
+
+    this.beanSprite.color = this._beanColor;
+
+    this.beanSprite.node.setScale(Vec3.ONE);
   }
 
-  /**
-   * 开始填充。
-   * 用 Flying 状态防止飞行动画期间重复点击。
-   */
-  public beginFill(): boolean {
-    if (this._state !== BeanState.Preview) {
+  public takeBean(): {
+    colorId: number;
+    color: Color;
+    worldPosition: Vec3;
+  } | null {
+    if (!this.hasBean) {
+      return null;
+    }
+
+    const result = {
+      colorId: this._beanColorId,
+
+      color: this._beanColor.clone(),
+
+      worldPosition: this.getBeanWorldPosition(),
+    };
+
+    this._beanColorId = EMPTY_COLOR;
+
+    if (this.beanSprite) {
+      this.beanSprite.node.active = false;
+    }
+
+    return result;
+  }
+
+  public placeBean(
+    colorId: number,
+    color: Color,
+    playAnimation = true,
+  ): boolean {
+    if (this.hasBean) {
       return false;
     }
 
-    this._state = BeanState.Flying;
+    this._beanColorId = colorId;
+
+    this._beanColor = color.clone();
+
+    this.refreshBeanVisual();
+
+    if (playAnimation && this.beanSprite) {
+      const node = this.beanSprite.node;
+
+      node.setScale(0.75, 0.75, 1);
+
+      tween(node)
+        .to(
+          0.07,
+          {
+            scale: new Vec3(1.15, 1.15, 1),
+          },
+          {
+            easing: "quadOut",
+          },
+        )
+        .to(
+          0.08,
+          {
+            scale: Vec3.ONE,
+          },
+          {
+            easing: "quadIn",
+          },
+        )
+        .start();
+    }
 
     return true;
   }
 
-  /**
-   * 飞豆抵达后切换为完成状态。
-   */
-  public fill(): void {
-    if (this._state === BeanState.Filled) {
-      return;
-    }
-
-    this.setState(BeanState.Filled);
-
-    this.node.setScale(0.8, 0.8, 1);
-
-    tween(this.node)
-      .to(0.06, {
-        scale: new Vec3(1.15, 1.15, 1),
-      })
-      .to(0.08, {
-        scale: Vec3.ONE,
-      })
-      .start();
+  public canPlaceBean(colorId: number): boolean {
+    return !this.hasBean && this._targetColorId === colorId;
   }
 
-  public cancelFill(): void {
-    if (this._state !== BeanState.Flying) {
-      return;
-    }
+  public getBeanWorldPosition(): Vec3 {
+    return this.beanSprite
+      ? this.beanSprite.node.worldPosition.clone()
+      : this.node.worldPosition.clone();
+  }
 
-    this._state = BeanState.Preview;
+  public getTargetWorldPosition(): Vec3 {
+    return this.baseSprite
+      ? this.baseSprite.node.worldPosition.clone()
+      : this.node.worldPosition.clone();
   }
 }
