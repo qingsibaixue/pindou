@@ -6,6 +6,7 @@ import {
   Color,
   Vec3,
   tween,
+  Tween,
 } from "cc";
 
 import { EMPTY_COLOR, BoardCellData } from "../data/LevelData";
@@ -107,6 +108,9 @@ export class BeanCell extends Component {
 
     this.beanSprite.color = this._beanColor;
 
+    // 换关/重置复用节点时，停掉可能残留的旧脉冲补间
+    Tween.stopAllByTarget(this.beanSprite.node);
+
     this.beanSprite.node.setScale(Vec3.ONE);
   }
 
@@ -130,6 +134,8 @@ export class BeanCell extends Component {
     this._beanColorId = EMPTY_COLOR;
 
     if (this.beanSprite) {
+      Tween.stopAllByTarget(this.beanSprite.node);
+      this.beanSprite.node.setScale(Vec3.ONE);
       this.beanSprite.node.active = false;
     }
 
@@ -154,20 +160,21 @@ export class BeanCell extends Component {
     if (playAnimation && this.beanSprite) {
       const node = this.beanSprite.node;
 
-      node.setScale(0.75, 0.75, 1);
+      Tween.stopAllByTarget(node);
+      node.setScale(1, 1, 1);
 
       tween(node)
         .to(
-          0.07,
+          0.08,
           {
-            scale: new Vec3(1.15, 1.15, 1),
+            scale: new Vec3(1.06, 1.06, 1),
           },
           {
             easing: "quadOut",
           },
         )
         .to(
-          0.08,
+          0.1,
           {
             scale: Vec3.ONE,
           },

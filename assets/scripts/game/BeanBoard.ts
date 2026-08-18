@@ -61,6 +61,15 @@ export class BeanBoard extends Component {
   @property
   cellSize = 40;
 
+  /**
+   * start 时是否自动加载内置 DEFAULT_LEVEL。
+   *
+   * 由 GameController 驱动关卡加载时置为 false，
+   * 避免与异步 JSON 加载冲突（双重建关）。
+   */
+  @property
+  autoLoadDefaultLevel = true;
+
   // =========================================================
   // Runtime
   // =========================================================
@@ -97,7 +106,9 @@ export class BeanBoard extends Component {
   // =========================================================
 
   protected start(): void {
-    this.loadLevel(DEFAULT_LEVEL);
+    if (this.autoLoadDefaultLevel) {
+      this.loadLevel(DEFAULT_LEVEL);
+    }
   }
 
   // =========================================================

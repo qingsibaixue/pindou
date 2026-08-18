@@ -1,4 +1,13 @@
-import { _decorator, Component, Sprite, Color, Vec3, tween } from "cc";
+import {
+  _decorator,
+  Component,
+  Sprite,
+  Color,
+  Vec3,
+  tween,
+  Tween,
+  UITransform,
+} from "cc";
 
 const { ccclass, property } = _decorator;
 
@@ -21,14 +30,23 @@ export class FlyingBean extends Component {
 
   /**
    * 初始化棋子。
+   *
+   * size：棋子渲染尺寸（宽=高）。
+   * 棋盘来源 32，托盘来源 40，保持与来源处视觉一致。
    */
-  public setup(color: Color): void {
+  public setup(color: Color, size = 32): void {
     this._beanColor = color.clone();
 
     if (this.sprite) {
       this.sprite.color = this._beanColor;
 
       this.sprite.node.active = true;
+
+      const transform = this.sprite.node.getComponent(UITransform);
+
+      if (transform) {
+        transform.setContentSize(size, size);
+      }
     }
 
     this.node.setScale(Vec3.ONE);
@@ -44,7 +62,7 @@ export class FlyingBean extends Component {
    * FloatingBeanQueue / beanLayer。
    */
   public flyTo(target: Vec3, onComplete?: () => void): void {
-    tween(this.node).stop();
+    Tween.stopAllByTarget(this.node);
 
     tween(this.node)
       .to(

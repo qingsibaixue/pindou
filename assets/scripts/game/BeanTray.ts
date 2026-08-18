@@ -80,10 +80,9 @@ export class BeanTray extends Component {
       return;
     }
 
-    // 整个 Tray 区域点击
-    this.onTrayClick?.();
-
-    // 检查是否点到具体 Slot
+    // 先检查是否点到具体 Slot：
+    // 命中槽位时只派发槽位点击，
+    // 让 GameController 决定"放下当前悬浮 + 悬浮这颗"的连贯操作
     for (let i = 0; i < this._slots.length; i++) {
       const slot = this._slots[i];
 
@@ -109,6 +108,9 @@ export class BeanTray extends Component {
 
       return;
     }
+
+    // 没点到 Slot，才算整个 Tray 区域点击
+    this.onTrayClick?.();
 
     console.log("[BeanTray] tray area click");
   }

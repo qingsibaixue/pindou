@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec3, tween } from "cc";
+import { _decorator, Component, Node, Vec3, tween, Tween } from "cc";
 
 const { ccclass, property } = _decorator;
 
@@ -42,7 +42,15 @@ export class FloatingBeanQueue extends Component {
   restoreDuration = 0.08;
 
   @property
-  floatingScale = 1.04;
+  floatingScale = 1.0;
+
+  /** 悬浮呼吸动画开关 */
+  @property
+  breathEnabled = true;
+
+  /** 呼吸缩放幅度上限（实际每颗豆在 50%~100% 之间随机） */
+  @property
+  breathScale = 0.09;
 
   private _group: FloatingBeanGroup | null = null;
 
@@ -131,7 +139,7 @@ export class FloatingBeanQueue extends Component {
         item.originalLocalPosition.z,
       );
 
-      tween(item.node).stop();
+      Tween.stopAllByTarget(item.node);
 
       tween(item.node)
         .to(
@@ -150,9 +158,81 @@ export class FloatingBeanQueue extends Component {
 
           if (finished === items.length) {
             this._animating = false;
+
+            this.startBreathing();
           }
         })
         .start();
+    }
+  }
+
+  /**
+   * 悬浮呼吸动画：
+   * 每颗豆的幅度 / 周期 / 起始延迟都带随机，
+   * 看起来自然不整齐。
+   *
+   * 注意：
+   * repeatForever 只会重复紧邻的前一个动作，
+   * 必须先 union() 把整段合并成一个整体再 repeatForever，
+   * 否则播完一遍就"卡住"（之前只呼吸一次的根因）。
+   */
+  private startBreathing(): void {
+    if (!this.breathEnabled || !this._group) {
+      return;
+    }
+
+    for (const item of this._group.items) {
+      const amp = this.breathScale * (0.5 + Math.random() * 0.5);
+
+      const up = new Vec3(1 + amp, 1 + amp, 1);
+      const down = new Vec3(1 - amp, 1 - amp, 1);
+
+      const half = 0.45 + Math.random() * 0.45;
+
+      // 每颗豆随机先放大或先缩小，看起来更自然
+      const startUp = Math.random() > 0.5;
+
+      tween(item.node)
+        .delay(Math.random() * 0.35)
+        .to(
+          half,
+          {
+            scale: startUp ? up : down,
+          },
+          {
+            easing: "sineInOut",
+          },
+        )
+        .to(
+          half,
+          {
+            scale: startUp ? down : up,
+          },
+          {
+            easing: "sineInOut",
+          },
+        )
+        .to(
+          half,
+          {
+            scale: Vec3.ONE,
+          },
+          {
+            easing: "sineInOut",
+          },
+        )
+        // 合并整段（含 delay）为一个动作，repeatForever 才能整体循环
+        .union()
+        .repeatForever()
+        .start();
+    }
+  }
+
+  /** 停掉指定豆节点上的所有补间并复位缩放 */
+  private stopItemTweens(items: FloatingBeanItem[]): void {
+    for (const item of items) {
+      Tween.stopAllByTarget(item.node);
+      item.node.setScale(Vec3.ONE);
     }
   }
 
@@ -177,6 +257,8 @@ export class FloatingBeanQueue extends Component {
       Math.min(count, this._group.items.length),
     );
 
+    this.stopItemTweens(items);
+
     if (this._group.items.length === 0) {
       this._group = null;
     }
@@ -195,6 +277,8 @@ export class FloatingBeanQueue extends Component {
     const group = this._group;
 
     this._group = null;
+
+    this.stopItemTweens(group.items);
 
     return group;
   }
@@ -219,7 +303,7 @@ export class FloatingBeanQueue extends Component {
     let finished = 0;
 
     for (const item of items) {
-      tween(item.node).stop();
+      Tween.stopAllByTarget(item.node);
 
       tween(item.node)
         .to(
@@ -272,6 +356,14 @@ export class FloatingBeanQueue extends Component {
   // =========================================================
 
   public releaseGroup(): void {
+    // 防御：直接释放时（如换关、取消）也要停掉呼吸等补间，
+    // 否则 repeatForever 的补间会挂在已被销毁/复用的节点上报错
+    if (this._group) {
+      for (const item of this._group.items) {
+        Tween.stopAllByTarget(item.node);
+      }
+    }
+
     this._group = null;
     this._animating = false;
   }
