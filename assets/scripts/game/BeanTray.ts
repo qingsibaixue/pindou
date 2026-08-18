@@ -160,6 +160,60 @@ export class BeanTray extends Component {
     console.log(`[BeanTray] built slots=${this._slots.length}`);
   }
 
+  public compactBeansWithReserved(reservedIndexes: Set<number>): void {
+    const beans: Array<{
+      colorId: number;
+      color: Color;
+    }> = [];
+
+    for (let i = 0; i < this._slots.length; i++) {
+      if (reservedIndexes.has(i)) {
+        continue;
+      }
+
+      const slot = this._slots[i];
+
+      if (!slot.hasBean) {
+        continue;
+      }
+
+      beans.push({
+        colorId: slot.colorId,
+        color: slot.beanColor,
+      });
+    }
+
+    // 只清非保留位置
+    for (let i = 0; i < this._slots.length; i++) {
+      if (reservedIndexes.has(i)) {
+        continue;
+      }
+
+      this._slots[i].clear();
+    }
+
+    let beanIndex = 0;
+
+    for (let i = 0; i < this._slots.length; i++) {
+      // 悬浮棋子占着这个逻辑位置
+      if (reservedIndexes.has(i)) {
+        continue;
+      }
+
+      if (beanIndex >= beans.length) {
+        break;
+      }
+
+      const bean = beans[beanIndex++];
+
+      this._slots[i].setBean(bean.colorId, bean.color);
+    }
+
+    console.log(
+      `[BeanTray] compact reserved=${reservedIndexes.size}, beans=${beans.length}`,
+    );
+  }
+
   public setupLevel(level: LevelData): void {
     this._level = level;
 

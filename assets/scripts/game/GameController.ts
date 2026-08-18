@@ -480,13 +480,28 @@ export class GameController extends Component {
         return;
       }
 
-      // Tray -> Board
-      // 全部移走后，Tray 自动缩进
-      if (
-        sourceGroup.sourceType === FloatingBeanSourceType.Tray &&
-        this.floatingQueue?.count === 0
-      ) {
-        this.beanTray?.compactBeans();
+      if (sourceGroup.sourceType === FloatingBeanSourceType.Tray) {
+        if (sourceGroup.sourceType === FloatingBeanSourceType.Tray) {
+          const currentGroup = this.floatingQueue?.getGroup();
+
+          if (!currentGroup || this.floatingQueue?.count === 0) {
+            // 已经全部离开 Tray
+            this.beanTray?.compactBeans();
+          } else {
+            // 还有 Tray 豆悬浮
+            // 它们的位置必须继续视为被占用
+            const reserved = new Set<number>();
+
+            for (const item of currentGroup.items) {
+              const index =
+                item.sourceRow * this.beanTray!.cols + item.sourceCol;
+
+              reserved.add(index);
+            }
+
+            this.beanTray?.compactBeansWithReserved(reserved);
+          }
+        }
       }
 
       this._busy = false;
@@ -595,17 +610,33 @@ export class GameController extends Component {
   }
 
   private restoreTrayItems(items: FloatingBeanItem[]): void {
-    for (const item of items) {
-      const slot = this.getTraySlot(item.sourceRow, item.sourceCol);
+    if (!this.beanTray) {
+      for (const item of items) {
+        item.node.destroy();
+      }
+
+      return;
+    }
+
+    const emptySlots = this.beanTray.getEmptySlots();
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
 
       const bean = item.node.getComponent(FlyingBean);
 
-      if (slot && bean && !slot.hasBean) {
+      const slot = emptySlots[i];
+
+      if (slot && bean) {
         slot.setBean(item.colorId, bean.beanColor);
       }
 
       item.node.destroy();
     }
+
+    this.beanTray.compactBeans();
+
+    console.log(`[GameController] tray restore count=${items.length}`);
   }
 
   // =========================================================
