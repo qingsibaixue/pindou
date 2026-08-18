@@ -10,10 +10,11 @@ import {
 } from "cc";
 
 import { FlyingBean } from "./FlyingBean";
+import { BeanTray } from "./BeanTray";
 
 import { EMPTY_COLOR, LevelData } from "../data/LevelData";
 
-import { BeanCell, BeanState } from "./BeanCell";
+import { BeanCell } from "./BeanCell";
 
 const { ccclass, property } = _decorator;
 
@@ -56,8 +57,8 @@ export class BeanBoard extends Component {
   @property(Node)
   flyingLayer: Node | null = null;
 
-  @property(Node)
-  beanSpawnPoint: Node | null = null;
+  @property(BeanTray)
+  beanTray: BeanTray | null = null;
 
   private _level: LevelData | null = null;
 
@@ -75,6 +76,7 @@ export class BeanBoard extends Component {
     this._level = level;
 
     const width = level.cols * this.cellSize;
+
     const height = level.rows * this.cellSize;
 
     const transform = this.getComponent(UITransform);
@@ -140,6 +142,26 @@ export class BeanBoard extends Component {
     this._cells[index] = cell;
   }
 
+  public tryFillByLocalPosition(local: Vec3): boolean {
+    if (!this._level) {
+      return false;
+    }
+
+    const width = this._level.cols * this.cellSize;
+
+    const height = this._level.rows * this.cellSize;
+
+    const localX = local.x + width * 0.5;
+
+    const localY = height * 0.5 - local.y;
+
+    const col = Math.floor(localX / this.cellSize);
+
+    const row = Math.floor(localY / this.cellSize);
+
+    return this.tryFill(row, col);
+  }
+
   public tryFill(row: number, col: number): boolean {
     if (!this._level) {
       return false;
@@ -162,17 +184,129 @@ export class BeanBoard extends Component {
       return false;
     }
 
-    if (cell.state === BeanState.Filled) {
+    /**
+     * Flying 状态防止玩家
+     * 在飞豆期间重复点同一格。
+     */
+    if (!cell.beginFill()) {
       return false;
     }
 
-    cell.fill();
-
-    this._remainingCount--;
-
-    if (this._remainingCount <= 0) {
-      this.onLevelComplete();
+    /**
+     * 托盘已经空了。
+     *
+     * 第一版先自动补满。
+     * 后面可以换成补豆动画。
+     */
+    if (this.beanTray && this.beanTray.isEmpty) {
+      this.beanTray.refill(cell.beanColor);
     }
+
+    /**
+     * 真正开始飞豆。
+     */
+    const success = this.flyBeanToCell(cell);
+
+    /**
+     * 如果托盘或 Prefab
+     * 出问题导致没飞成功，
+     * 要把 Cell 状态退回去。
+     */
+    if (!success) {
+      cell.cancelFill();
+
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * 从 BeanTray 取一颗真实的豆，
+   * 然后让 FlyingBean 从对应槽位飞向目标。
+   */
+  private flyBeanToCell(cell: BeanCell): boolean {
+    if (!this.flyingBeanPrefab || !this.flyingLayer || !this.beanTray) {
+      console.warn("[BeanBoard] flying references missing");
+
+      return false;
+    }
+
+    /**
+     * BeanTray 内部自己决定
+     * 到底从哪个 BeanSlot 取。
+     *
+     * BeanBoard 不需要知道 Slot 细节。
+     */
+    const spawnWorldPosition = this.beanTray.takeBean();
+
+    if (!spawnWorldPosition) {
+      console.warn("[BeanBoard] no bean available in tray");
+
+      return false;
+    }
+
+    const flyingNode = instantiate(this.flyingBeanPrefab);
+
+    flyingNode.parent = this.flyingLayer;
+
+    const flyingLayerTransform = this.flyingLayer.getComponent(UITransform);
+
+    if (!flyingLayerTransform) {
+      console.warn("[BeanBoard] FlyingLayer needs UITransform");
+
+      flyingNode.destroy();
+
+      return false;
+    }
+
+    /**
+     * 托盘 Slot 的世界坐标
+     * 转 FlyingLayer 本地坐标。
+     */
+    const startLocal =
+      flyingLayerTransform.convertToNodeSpaceAR(spawnWorldPosition);
+
+    /**
+     * 目标 BeanCell 世界坐标
+     * 转 FlyingLayer 本地坐标。
+     */
+    const targetLocal = flyingLayerTransform.convertToNodeSpaceAR(
+      cell.node.worldPosition,
+    );
+
+    flyingNode.setPosition(startLocal);
+
+    const flyingBean = flyingNode.getComponent(FlyingBean);
+
+    if (!flyingBean) {
+      console.warn("[BeanBoard] FlyingBean component missing");
+
+      flyingNode.destroy();
+
+      return false;
+    }
+
+    /**
+     * 飞行豆颜色与目标格一致。
+     */
+    flyingBean.setup(cell.beanColor);
+
+    flyingBean.flyTo(targetLocal, () => {
+      /**
+       * 飞豆真正到达后，
+       * 目标格才切换 Filled。
+       */
+      cell.fill();
+
+      this._remainingCount--;
+
+      console.log(`[BeanBoard] remaining = ${this._remainingCount}`);
+
+      if (this._remainingCount <= 0) {
+        this.onLevelComplete();
+      }
+    });
 
     return true;
   }
@@ -187,53 +321,5 @@ export class BeanBoard extends Component {
     this._cells.length = 0;
 
     this._remainingCount = 0;
-  }
-
-  private flyBeanToCell(cell: BeanCell): void {
-    if (!this.flyingBeanPrefab || !this.flyingLayer || !this.beanSpawnPoint) {
-      return;
-    }
-
-    const flyingNode = instantiate(this.flyingBeanPrefab);
-
-    flyingNode.parent = this.flyingLayer;
-
-    flyingNode.setWorldPosition(this.beanSpawnPoint.worldPosition);
-
-    const flyingBean = flyingNode.getComponent(FlyingBean);
-
-    if (!flyingBean) {
-      flyingNode.destroy();
-      return;
-    }
-
-    flyingBean.setup(cell.beanColor);
-
-    flyingBean.flyTo(cell.getWorldPosition(), () => {
-      cell.fill();
-
-      this._remainingCount--;
-
-      if (this._remainingCount <= 0) {
-        this.onLevelComplete();
-      }
-    });
-  }
-
-  public tryFillByLocalPosition(local: Vec3): boolean {
-    if (!this._level) {
-      return false;
-    }
-
-    const width = this._level.cols * this.cellSize;
-    const height = this._level.rows * this.cellSize;
-
-    const localX = local.x + width * 0.5;
-    const localY = height * 0.5 - local.y;
-
-    const col = Math.floor(localX / this.cellSize);
-    const row = Math.floor(localY / this.cellSize);
-
-    return this.tryFill(row, col);
   }
 }

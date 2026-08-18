@@ -4,8 +4,8 @@ import {
   Sprite,
   SpriteFrame,
   Color,
-  tween,
   Vec3,
+  tween,
 } from "cc";
 
 const { ccclass, property } = _decorator;
@@ -13,6 +13,7 @@ const { ccclass, property } = _decorator;
 export enum BeanState {
   Empty,
   Preview,
+  Flying,
   Filled,
 }
 
@@ -28,10 +29,12 @@ export class BeanCell extends Component {
   filledSpriteFrame: SpriteFrame | null = null;
 
   private _row = 0;
+
   private _col = 0;
 
   private _colorId = -1;
-  private _state = BeanState.Empty;
+
+  private _state: BeanState = BeanState.Empty;
 
   public get row(): number {
     return this._row;
@@ -49,16 +52,26 @@ export class BeanCell extends Component {
     return this._state;
   }
 
+  public get beanColor(): Color {
+    if (!this.sprite) {
+      return Color.WHITE.clone();
+    }
+
+    return this.sprite.color.clone();
+  }
+
+  public getWorldPosition(): Vec3 {
+    return this.node.worldPosition.clone();
+  }
+
   public setup(row: number, col: number, colorId: number, color: Color): void {
     this._row = row;
     this._col = col;
     this._colorId = colorId;
 
-    if (!this.sprite) {
-      return;
+    if (this.sprite) {
+      this.sprite.color = color;
     }
-
-    this.sprite.color = color;
 
     this.setState(BeanState.Preview);
   }
@@ -81,6 +94,23 @@ export class BeanCell extends Component {
     }
   }
 
+  /**
+   * 开始填充。
+   * 用 Flying 状态防止飞行动画期间重复点击。
+   */
+  public beginFill(): boolean {
+    if (this._state !== BeanState.Preview) {
+      return false;
+    }
+
+    this._state = BeanState.Flying;
+
+    return true;
+  }
+
+  /**
+   * 飞豆抵达后切换为完成状态。
+   */
   public fill(): void {
     if (this._state === BeanState.Filled) {
       return;
@@ -88,23 +118,23 @@ export class BeanCell extends Component {
 
     this.setState(BeanState.Filled);
 
-    this.node.setScale(0.75, 0.75, 1);
+    this.node.setScale(0.8, 0.8, 1);
 
     tween(this.node)
-      .to(0.08, {
-        scale: new Vec3(1.12, 1.12, 1),
-      })
       .to(0.06, {
+        scale: new Vec3(1.15, 1.15, 1),
+      })
+      .to(0.08, {
         scale: Vec3.ONE,
       })
       .start();
   }
 
-  public get beanColor(): Color {
-    return this.sprite ? this.sprite.color.clone() : Color.WHITE.clone();
-  }
+  public cancelFill(): void {
+    if (this._state !== BeanState.Flying) {
+      return;
+    }
 
-  public getWorldPosition(): Vec3 {
-    return this.node.worldPosition.clone();
+    this._state = BeanState.Preview;
   }
 }

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Sprite, Color, Vec3, tween } from "cc";
+import { _decorator, Component, Sprite, Color, Vec3, tween } from "cc";
 
 const { ccclass, property } = _decorator;
 
@@ -13,30 +13,52 @@ export class FlyingBean extends Component {
     }
   }
 
-  public flyTo(targetWorldPosition: Vec3, onComplete: () => void): void {
-    const start = this.node.worldPosition.clone();
+  /**
+   * 注意：
+   * 这里传入的 targetPosition 是 FlyingLayer 下的“本地坐标”
+   * 不再使用 worldPosition 做 tween。
+   */
+  public flyTo(targetPosition: Vec3, onComplete: () => void): void {
+    const start = this.node.position.clone();
 
-    const middle = new Vec3(
-      (start.x + targetWorldPosition.x) * 0.5,
-      Math.max(start.y, targetWorldPosition.y) + 120,
-      start.z,
+    console.log("[FlyingBean] local start:", start, "target:", targetPosition);
+
+    // 先明显抬起来
+    const liftPoint = new Vec3(start.x, start.y + 80, 0);
+
+    // 中间形成弧线
+    const arcPoint = new Vec3(
+      (start.x + targetPosition.x) * 0.5,
+      Math.max(start.y, targetPosition.y) + 160,
+      0,
     );
+
+    this.node.setScale(0.8, 0.8, 1);
 
     tween(this.node)
       .to(
-        0.18,
+        0.12,
         {
-          worldPosition: middle,
-          scale: new Vec3(1.12, 1.12, 1),
+          position: liftPoint,
+          scale: new Vec3(1.1, 1.1, 1),
         },
         {
           easing: "quadOut",
         },
       )
       .to(
-        0.14,
+        0.25,
         {
-          worldPosition: targetWorldPosition,
+          position: arcPoint,
+        },
+        {
+          easing: "sineOut",
+        },
+      )
+      .to(
+        0.22,
+        {
+          position: targetPosition.clone(),
           scale: Vec3.ONE,
         },
         {
@@ -44,7 +66,10 @@ export class FlyingBean extends Component {
         },
       )
       .call(() => {
+        console.log("[FlyingBean] arrived");
+
         onComplete();
+
         this.node.destroy();
       })
       .start();
