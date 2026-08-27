@@ -2,8 +2,8 @@
   "id": "level_045",
   "name": "魔法学院",
   "guide": "先完成中央学院主塔",
-  "rows": 27,
-  "cols": 18,
+  "rows": 20,
+  "cols": 15,
   "colors": [
     {
       "id": 0,
@@ -64,582 +64,6 @@
       "beanColorId": 0
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 2,
-      "beanColorId": 3
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
-      "targetColorId": 1,
-      "beanColorId": 2
-    },
-    {
       "targetColorId": 1,
       "beanColorId": 2
     },
@@ -704,6 +128,66 @@
       "beanColorId": 2
     },
     {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
       "targetColorId": 1,
       "beanColorId": 2
     },
@@ -732,750 +216,6 @@
       "beanColorId": 0
     },
     {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 4,
-      "beanColorId": 5
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 3,
-      "beanColorId": 4
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
-      "targetColorId": 0,
-      "beanColorId": 0
-    },
-    {
       "targetColorId": 0,
       "beanColorId": 0
     },
@@ -1486,22 +226,6 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
     },
     {
       "targetColorId": 0,
@@ -1510,42 +234,26 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
     },
     {
-      "targetColorId": 6,
-      "beanColorId": 1
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 6,
-      "beanColorId": 1
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 6,
-      "beanColorId": 1
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 6,
-      "beanColorId": 1
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
       "targetColorId": 0,
@@ -1554,66 +262,10 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
     },
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
     },
     {
       "targetColorId": 0,
@@ -1622,66 +274,10 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
     },
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
     },
     {
       "targetColorId": 0,
@@ -1694,42 +290,34 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 5,
-      "beanColorId": 6
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
       "targetColorId": 0,
@@ -1738,14 +326,6 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
-    },
-    {
-      "targetColorId": 6,
-      "beanColorId": 1
     },
     {
       "targetColorId": 0,
@@ -1770,50 +350,26 @@
     {
       "targetColorId": 0,
       "beanColorId": 0
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
-    },
-    {
-      "targetColorId": 5,
-      "beanColorId": 6
     },
     {
       "targetColorId": 0,
       "beanColorId": 0
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 1,
+      "beanColorId": 2
     },
     {
       "targetColorId": 0,
@@ -1856,6 +412,62 @@
       "beanColorId": 6
     },
     {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
       "targetColorId": 5,
       "beanColorId": 6
     },
@@ -1864,8 +476,32 @@
       "beanColorId": 0
     },
     {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
       "targetColorId": 0,
       "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
     },
     {
       "targetColorId": 0,
@@ -1888,8 +524,48 @@
       "beanColorId": 0
     },
     {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
       "targetColorId": 0,
       "beanColorId": 0
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
     },
     {
       "targetColorId": 0,
@@ -1904,8 +580,172 @@
       "beanColorId": 0
     },
     {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
       "targetColorId": 0,
       "beanColorId": 0
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 1,
+      "beanColorId": 2
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
     },
     {
       "targetColorId": 0,
@@ -1920,8 +760,52 @@
       "beanColorId": 0
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 5,
+      "beanColorId": 6
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
     },
     {
       "targetColorId": 0,
@@ -1936,8 +820,52 @@
       "beanColorId": 0
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
     },
     {
       "targetColorId": 0,
@@ -1952,8 +880,52 @@
       "beanColorId": 0
     },
     {
-      "targetColorId": 0,
-      "beanColorId": 0
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 4,
+      "beanColorId": 3
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
     },
     {
       "targetColorId": 0,
@@ -1968,12 +940,296 @@
       "beanColorId": 0
     },
     {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
       "targetColorId": 0,
       "beanColorId": 0
     },
     {
       "targetColorId": 0,
       "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 0,
+      "beanColorId": 0
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 2,
+      "beanColorId": 1
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 6,
+      "beanColorId": 5
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
+    },
+    {
+      "targetColorId": 3,
+      "beanColorId": 4
     },
     {
       "targetColorId": 0,

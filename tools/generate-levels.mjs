@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { createCreativeLayouts } from "./creative-layouts.mjs";
 
 const outputDir = resolve("assets/resources/levels");
 const TRAY_CAPACITY = 20;
@@ -23,7 +24,7 @@ const levelNames = [
   "参天大树", "灯塔守望", "热气球之旅", "火箭升空", "飞瀑入潭",
   "彩虹风筝", "泡泡鱼群", "双向飞行", "宝石山谷", "星球轨道",
   "云端阶梯", "珠宝橱窗", "火箭接力", "灯笼长街", "五彩祥云",
-  "雪山营地", "深海潜艇", "沙漠城堡", "森林木屋", "巨龙之门",
+  "雪山营地", "深海潜艇", "沙漠城堡", "森林木屋", "远古恐龙",
   "月球基地", "蒸汽工坊", "极光冰宫", "天空鲸岛", "时光沙漏",
   "星际舰队", "双龙戏珠", "四季花园", "海上都市", "魔法学院",
   "银河列车", "天空乐园", "守护神殿", "世界拼图", "万象庆典",
@@ -36,7 +37,7 @@ const levelGuides = [
   "从树冠向树根完成生长", "灯塔由光室向礁石逐层点亮", "让气球从篮筐一路升到球顶", "从火焰向箭头完成升空", "水流从云端落入潭底",
   "五只风筝沿弧线依次换色", "鱼群错峰游动，不要追单颗豆", "两排火箭反向接力", "先立山峰，再填山谷", "沿轨道判断五色循环",
   "阶梯有转折，留意中间平台", "上排宝石先腾出下排空间", "火箭沿对角线分批接力", "整盏灯笼搬运，点亮长街", "让五朵云在上下层流动",
-  "从山顶到营地分三层判断", "潜艇编队上下反向航行", "城堡砖块按阶梯重建", "屋顶与地基使用不同节奏", "左右门柱最后同时归位",
+  "从山顶到营地分三层判断", "潜艇编队上下反向航行", "城堡砖块按阶梯重建", "屋顶与地基使用不同节奏", "从背脊到尾巴，寻找大小不同的色块",
   "基地由中心向两翼展开", "沿蒸汽管道的折线接力", "先完成冰宫中央尖塔", "鲸岛按两排波浪顺序漂移", "上下宽、中间窄是沙漏线索",
   "六艘舰船按两列编队归位", "两组三色循环围绕中心宝珠", "上下花园是两组独立三色循环", "城市六区整片点亮", "先完成中央学院主塔",
   "上下列车反向行驶", "围绕中心乐园完成六色环", "从神殿顶端向基座落豆", "上下拼图片分别寻找循环", "最终庆典：识别三组对称关系",
@@ -267,6 +268,8 @@ const fallingWater = composeVertical([
   ["...D...", "..DDD..", ".DDDDD.", "DDDDDDD", ".DDDDD.", "..DDD.."],
 ]);
 
+const creativeLayouts = createCreativeLayouts();
+
 // 50关全部由明确的像素图或场景构图组成。每个字母是一整片可移动区域；同一关中
 // 每个字母数量相等，才能让玩家完整地“拿起一片、倒下一片”。
 const handcraftedLayouts = [
@@ -281,18 +284,7 @@ const handcraftedLayouts = [
   ["A....AB....B", "AA..AABB..BB", "AAAAAABBBBBB", ".AAACCDDBBB.", ".CCCCCDDDDD.", "..CCCCDDDD..", "..CCCCDDDD.."],
   ["AAAAAAAAAAAA", "BBBBBBBBBBBA", "BCCCCCCCCCBA", "BCDDDDDDDDBA", "BCDDDDDDDDCA", "BCDDDDDDDDCA", "BCCCCCCCCCCA", "BBBBBBAAAAAA"],
   candyTrain,
-  singingWhale,
-  sailingBoat,
-  nightSkyline,
-  joyfulNotes,
-  toweringTree,
-  watchingLighthouse,
-  balloonJourney,
-  rocketLaunch,
-  fallingWater,
-  ...chapterThreeLayouts,
-  ...chapterFourLayouts,
-  ...chapterFiveLayouts,
+  ...creativeLayouts,
 ];
 
 function horizontalSnake(rows, cols) {
@@ -375,7 +367,8 @@ function beanPermutation(regionCount, number) {
 }
 
 function buildHandcraftedLevel(number) {
-  const art = handcraftedLayouts[number - 1];
+  const layout = handcraftedLayouts[number - 1];
+  const art = Array.isArray(layout) ? layout : layout.art;
   const rows = art.length;
   const cols = art[0].length;
   if (art.some((row) => row.length !== cols)) {
@@ -385,7 +378,9 @@ function buildHandcraftedLevel(number) {
   const letters = [...new Set(art.join(""))]
     .filter((key) => key !== ".")
     .sort();
-  const permutation = beanPermutation(letters.length, number);
+  const permutation = Array.isArray(layout)
+    ? beanPermutation(letters.length, number)
+    : layout.beanMapping;
   const theme = colorThemes[(number - 1) % colorThemes.length];
   const colors = [{ id: 0, hex: "#E8F7F5" }];
   for (let id = 1; id <= letters.length; id++) colors.push({ id, hex: theme[id - 1] });
@@ -596,7 +591,8 @@ const summaries = [];
 for (const level of levels) {
   const groups = validateDesignedLevel(level);
   const overflow = groups.some((size) => size > level.trayCapacity) ? "·需分批" : "";
-  summaries.push(`${level.id}:${groups.length}组×${groups[0]}颗${overflow}`);
+  const sizes = [...new Set(groups)].sort((a, b) => a - b).join("/");
+  summaries.push(`${level.id}:${groups.length}组·${sizes}颗${overflow}`);
   writeFileSync(
     resolve(outputDir, `${level.id}.json`),
     `${JSON.stringify(level, null, 2)}\n`,

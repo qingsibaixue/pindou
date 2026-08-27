@@ -25,7 +25,10 @@ function components(indexes, cols) {
       const row = Math.floor(index / cols);
       const col = index % cols;
       for (const [dr, dc] of [[-1, 0], [0, -1], [0, 1], [1, 0]]) {
-        const next = (row + dr) * cols + col + dc;
+        const nextRow = row + dr;
+        const nextCol = col + dc;
+        if (nextRow < 0 || nextCol < 0 || nextCol >= cols) continue;
+        const next = nextRow * cols + nextCol;
         if (remaining.delete(next)) queue.push(next);
       }
     }
@@ -50,7 +53,10 @@ function hasConnectedSplit(indexes, cols, firstSize) {
       const row = Math.floor(index / cols);
       const col = index % cols;
       for (const [dr, dc] of [[-1, 0], [0, -1], [0, 1], [1, 0]]) {
-        const next = (row + dr) * cols + col + dc;
+        const nextRow = row + dr;
+        const nextCol = col + dc;
+        if (nextRow < 0 || nextCol < 0 || nextCol >= cols) continue;
+        const next = nextRow * cols + nextCol;
         if (allowed.has(next) && !seen.has(next)) queue.push(next);
       }
     }
@@ -91,7 +97,6 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
   assert(level.cols >= 2 && level.cols <= 32, `${id}: cols out of range`);
   if (number >= 11) {
     assert(level.cols <= 18, `${id}: portrait level is too wide (${level.cols} columns)`);
-    assert(level.rows >= level.cols, `${id}: portrait level must grow vertically (${level.rows}x${level.cols})`);
   }
   assert(level.cells.length === level.rows * level.cols, `${id}: cell count mismatch`);
   assert(level.trayCapacity === TRAY_CAPACITY, `${id}: tray capacity must be 20`);
@@ -131,15 +136,14 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
     assert(hasConnectedSplit(indexes, level.cols, TRAY_CAPACITY), `${id}: target ${colorId} lacks connected overflow split`);
     sizes.push(indexes.length);
   }
-  assert(new Set(sizes).size === 1, `${id}: group sizes differ (${sizes.join(",")})`);
+  if (number >= 12) {
+    assert(new Set(sizes).size >= 2, `${id}: creative level must use varied group sizes (${sizes.join(",")})`);
+  }
   assert([...mapping.values()].every((value) => mapping.has(value)), `${id}: bean mapping is not a permutation`);
 
   const cycles = cycleLengths(mapping);
-  if (number >= 21 && number <= 40) {
-    assert(cycles.join(",") === "5", `${id}: five-color chapter must use one 5-cycle`);
-  }
-  if (number >= 41) {
-    const expected = number % 3 === 0 ? "6" : number % 3 === 1 ? "3,3" : "2,2,2";
+  if (number >= 12) {
+    const expected = Array(level.colors.length > 5 ? 3 : 2).fill(2).join(",");
     assert(cycles.join(",") === expected, `${id}: expected cycles ${expected}, got ${cycles.join(",")}`);
   }
 
