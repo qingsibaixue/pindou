@@ -1,6 +1,6 @@
 // assets/scripts/data/LevelLoader.ts
 
-import { resources, JsonAsset } from "cc";
+import { resources, JsonAsset, sys } from "cc";
 
 import { LevelData, DEFAULT_LEVEL, validateLevelData } from "./LevelData";
 
@@ -11,7 +11,7 @@ import { LevelData, DEFAULT_LEVEL, validateLevelData } from "./LevelData";
  *
  * 关卡来源（按优先级）：
  *
- * 1. localStorage 里指定的关卡 ID（调试用，Web 平台有效）
+ * 1. Cocos sys.localStorage 里指定的关卡 ID（Web/小游戏平台通用）
  *    LevelLoader.setCurrentLevelId("level_002")
  *
  * 2. assets/resources/levels/{id}.json
@@ -31,10 +31,10 @@ export class LevelLoader {
   /** 未指定关卡 ID 时默认加载的第一关 */
   private static readonly FIRST_LEVEL_ID = "level_001";
 
-  /** 调试用：指定下一次要加载的关卡 ID（Web 平台） */
+  /** 指定下一次要加载的关卡 ID（Web/小游戏平台通用） */
   public static setCurrentLevelId(id: string): void {
     try {
-      localStorage.setItem(this.LEVEL_ID_KEY, id);
+      sys.localStorage.setItem(this.LEVEL_ID_KEY, id);
     } catch (e) {
       console.warn("[LevelLoader] localStorage unavailable:", e);
     }
@@ -42,7 +42,7 @@ export class LevelLoader {
 
   public static getCurrentLevelId(): string {
     try {
-      return localStorage.getItem(this.LEVEL_ID_KEY) || "";
+      return sys.localStorage.getItem(this.LEVEL_ID_KEY) || "";
     } catch (e) {
       return "";
     }

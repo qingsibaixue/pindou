@@ -264,7 +264,7 @@ const state = {
   isPainting: false,
   levelId: 'level_001',
   levelName: '新关卡',
-  trayCapacity: 30,
+  trayCapacity: 20,
   trayBeans: [],
 };
 
@@ -592,9 +592,9 @@ function configPanel() {
   row1.className = 'config-row';
   row1.innerHTML = '<label>行数</label>';
   const inRows = document.createElement('input');
-  inRows.type = 'number'; inRows.min = 2; inRows.max = 15; inRows.value = state.rows;
+  inRows.type = 'number'; inRows.min = 2; inRows.max = 32; inRows.value = state.rows;
   inRows.oninput = () => {
-    const v = Math.max(2, Math.min(15, parseInt(inRows.value) || 8));
+    const v = Math.max(2, Math.min(32, parseInt(inRows.value) || 8));
     if (v !== state.rows) { state.rows = v; resizeLayers(); buildBoard(); renderStepNav(); }
   };
   row1.appendChild(inRows);
@@ -604,16 +604,16 @@ function configPanel() {
   row2.className = 'config-row';
   row2.innerHTML = '<label>列数</label>';
   const inCols = document.createElement('input');
-  inCols.type = 'number'; inCols.min = 2; inCols.max = 15; inCols.value = state.cols;
+  inCols.type = 'number'; inCols.min = 2; inCols.max = 32; inCols.value = state.cols;
   inCols.oninput = () => {
-    const v = Math.max(2, Math.min(15, parseInt(inCols.value) || 8));
+    const v = Math.max(2, Math.min(32, parseInt(inCols.value) || 8));
     if (v !== state.cols) { state.cols = v; resizeLayers(); buildBoard(); renderStepNav(); }
   };
   row2.appendChild(inCols);
   g1.appendChild(row2);
   const hint1 = document.createElement('div');
   hint1.className = 'hint';
-  hint1.textContent = '范围 2 ~ 15，修改后已有的涂色会保留（超出部分截断）。';
+  hint1.textContent = '范围 2 ~ 32，游戏会按长宽自动缩放格子；修改后已有涂色会保留。';
   g1.appendChild(hint1);
   d.appendChild(g1);
 
@@ -843,9 +843,9 @@ function exportPanel() {
   r3.className = 'config-row';
   r3.innerHTML = '<label>容量</label>';
   const inCap = document.createElement('input');
-  inCap.type = 'number'; inCap.min = 1; inCap.max = 100; inCap.value = state.trayCapacity;
+  inCap.type = 'number'; inCap.min = 1; inCap.max = 20; inCap.value = state.trayCapacity;
   inCap.oninput = () => {
-    state.trayCapacity = Math.max(1, parseInt(inCap.value) || 30);
+    state.trayCapacity = Math.min(20, Math.max(1, parseInt(inCap.value) || 20));
     refreshJson(); updateStats(); updateValidation();
   };
   r3.appendChild(inCap);
@@ -856,20 +856,10 @@ function exportPanel() {
   trayBox.id = 'trayBeansBox';
   g2.appendChild(trayBox);
 
-  const addRow = document.createElement('div');
-  addRow.className = 'tray-add-row';
-  const addLabel = document.createElement('div');
-  addLabel.className = 'hint'; addLabel.style.width = '100%';
-  addLabel.textContent = '点击颜色加入暂存槽：';
-  addRow.appendChild(addLabel);
-  for (const c of state.colors) {
-    const btn = document.createElement('button');
-    btn.className = 'tray-add-btn'; btn.style.background = c.hex;
-    btn.title = `${colorName(c.hex)} #${c.id}`;
-    btn.onclick = () => { state.trayBeans.push(c.id); renderTrayBeans(); refreshJson(); updateStats(); updateValidation(); };
-    addRow.appendChild(btn);
-  }
-  g2.appendChild(addRow);
+  const trayHint = document.createElement('div');
+  trayHint.className = 'hint';
+  trayHint.textContent = '开局固定为空，仅用于玩家临时中转整组豆豆。';
+  g2.appendChild(trayHint);
   d.appendChild(g2);
 
   // 校验
@@ -921,7 +911,7 @@ function renderTrayBeans() {
   if (!box) return;
   box.innerHTML = '';
   if (state.trayBeans.length === 0) {
-    box.innerHTML = '<span class="hint">（空）点击下方颜色加入</span>';
+    box.innerHTML = '<span class="hint">（空）</span>';
     return;
   }
   state.trayBeans.forEach((cid, i) => {
@@ -977,18 +967,22 @@ function buildLevelData() {
     colors: state.colors.map(c => ({ id: c.id, hex: c.hex })),
     cells,
     trayCapacity: state.trayCapacity,
-    trayBeans: [...state.trayBeans],
+    trayBeans: [],
   };
 }
 
 function validateLevel() {
   const errors = [];
-  if (state.trayCapacity <= 0) errors.push('trayCapacity 必须大于 0');
+  if (state.trayCapacity <= 0 || state.trayCapacity > 20)
+    errors.push('trayCapacity 必须在 1~20 之间（与游戏暂存区容量一致）');
   if (state.trayBeans.length > state.trayCapacity)
     errors.push(`暂存槽棋子超过容量：棋子=${state.trayBeans.length}，容量=${state.trayCapacity}`);
+  if (state.trayBeans.length !== 0)
+    errors.push('暂存槽必须空着开局；它只用于玩家临时中转整组豆豆');
 
   const validIds = new Set(state.colors.map(c => c.id));
   const targetCounts = {}, boardBeanCounts = {}, trayBeanCounts = {};
+  let boardHoleCount = 0;
 
   for (let r = 0; r < state.rows; r++) {
     for (let c = 0; c < state.cols; c++) {
@@ -999,7 +993,7 @@ function validateLevel() {
       if (b !== EMPTY_COLOR) {
         if (!validIds.has(b)) errors.push(`格子(${r},${c})：beanColorId=${b} 未配置`);
         boardBeanCounts[b] = (boardBeanCounts[b] || 0) + 1;
-      }
+      } else boardHoleCount++;
     }
   }
   state.trayBeans.forEach((cid, i) => {
@@ -1015,6 +1009,40 @@ function validateLevel() {
     if (t !== beans)
       errors.push(`颜色 ${c.id}(${c.hex}) 数量不匹配：目标底=${t}，实际棋子=${beans}`);
   }
+
+  if (boardHoleCount > 0)
+    errors.push(`棋盘开局不能留空：当前有 ${boardHoleCount} 个空槽`);
+
+  const seen = new Set();
+  const groupSizes = [];
+  for (let sr = 0; sr < state.rows; sr++) {
+    for (let sc = 0; sc < state.cols; sc++) {
+      const startKey = `${sr}:${sc}`;
+      const colorId = state.beanLayer[sr][sc];
+      if (seen.has(startKey) || colorId === EMPTY_COLOR || colorId === state.targetLayer[sr][sc]) continue;
+      const queue = [[sr, sc]];
+      seen.add(startKey);
+      let size = 0;
+      while (queue.length) {
+        const [r, c] = queue.shift();
+        size++;
+        for (const [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+          const nr = r + dr, nc = c + dc, key = `${nr}:${nc}`;
+          if (nr < 0 || nr >= state.rows || nc < 0 || nc >= state.cols || seen.has(key)) continue;
+          const bean = state.beanLayer[nr][nc];
+          if (bean !== colorId || bean === state.targetLayer[nr][nc]) continue;
+          seen.add(key); queue.push([nr, nc]);
+        }
+      }
+      groupSizes.push(size);
+    }
+  }
+  if (groupSizes.length < 3)
+    errors.push(`至少需要 3 个可移动大豆群：当前=${groupSizes.length}`);
+  if (groupSizes.some(size => size < 12))
+    errors.push(`存在少于 12 颗的碎片组：${groupSizes.join(', ')}`);
+  if (groupSizes.some(size => size > 30))
+    errors.push(`存在超过 30 颗的拖沓豆群：${groupSizes.join(', ')}`);
   return errors;
 }
 
@@ -1052,7 +1080,7 @@ function loadLevelData(level) {
   state.colors = level.colors.map(c => ({ id: c.id, hex: c.hex }));
   state.nextColorId = Math.max(...state.colors.map(c => c.id)) + 1;
   state.levelId = level.id; state.levelName = level.name;
-  state.trayCapacity = level.trayCapacity; state.trayBeans = [...(level.trayBeans || [])];
+  state.trayCapacity = level.trayCapacity; state.trayBeans = [];
   state.targetLayer = []; state.beanLayer = [];
   for (let r = 0; r < level.rows; r++) {
     const tRow = [], bRow = [];

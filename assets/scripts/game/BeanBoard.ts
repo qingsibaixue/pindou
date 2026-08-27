@@ -61,6 +61,15 @@ export class BeanBoard extends Component {
   @property
   cellSize = 40;
 
+  @property
+  maxBoardWidth = 600;
+
+  @property
+  maxBoardHeight = 600;
+
+  @property
+  minCellSize = 18;
+
   /**
    * start 时是否自动加载内置 DEFAULT_LEVEL。
    *
@@ -75,6 +84,8 @@ export class BeanBoard extends Component {
   // =========================================================
 
   private _level: LevelData | null = null;
+
+  private _preferredCellSize = 40;
 
   /**
    * index =
@@ -111,6 +122,10 @@ export class BeanBoard extends Component {
     }
   }
 
+  protected onLoad(): void {
+    this._preferredCellSize = this.cellSize;
+  }
+
   // =========================================================
   // Level
   // =========================================================
@@ -133,6 +148,15 @@ export class BeanBoard extends Component {
     // =====================================================
     // Board Size
     // =====================================================
+
+    this.cellSize = Math.max(
+      this.minCellSize,
+      Math.min(
+        this._preferredCellSize,
+        Math.floor(this.maxBoardWidth / level.cols),
+        Math.floor(this.maxBoardHeight / level.rows),
+      ),
+    );
 
     const width = level.cols * this.cellSize;
 
@@ -185,6 +209,10 @@ export class BeanBoard extends Component {
     const node = instantiate(this.cellPrefab);
 
     node.parent = this.node;
+
+    const prefabSize = node.getComponent(UITransform)?.width || 40;
+    const scale = this.cellSize / prefabSize;
+    node.setScale(scale, scale, 1);
 
     // =====================================================
     // Position
@@ -596,6 +624,10 @@ export class BeanBoard extends Component {
 
   public get level(): LevelData | null {
     return this._level;
+  }
+
+  public get beanVisualSize(): number {
+    return this.cellSize * 0.8;
   }
 
   public get rows(): number {

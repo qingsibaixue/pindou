@@ -534,7 +534,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 600,
-      "height": 200
+      "height": 136
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -557,7 +557,7 @@
       "__uuid__": "4be60670-78b7-4045-9df8-22931b3286b5",
       "__expectedType__": "cc.Prefab"
     },
-    "rows": 3,
+    "rows": 2,
     "cols": 10,
     "cellWidth": 48,
     "cellHeight": 48,

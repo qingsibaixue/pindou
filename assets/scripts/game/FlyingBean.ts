@@ -61,12 +61,17 @@ export class FlyingBean extends Component {
    * 当前项目里通常就是：
    * FloatingBeanQueue / beanLayer。
    */
-  public flyTo(target: Vec3, onComplete?: () => void): void {
+  public flyTo(
+    target: Vec3,
+    onComplete?: () => void,
+    delay = 0,
+  ): void {
     Tween.stopAllByTarget(this.node);
 
     tween(this.node)
+      .delay(delay)
       .to(
-        0.18,
+        0.16,
         {
           position: target,
         },

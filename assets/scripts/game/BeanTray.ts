@@ -20,7 +20,7 @@ export class BeanTray extends Component {
   @property(Prefab)
   slotPrefab: Prefab | null = null;
 
-  @property rows = 3;
+  @property rows = 2;
   @property cols = 10;
 
   @property cellWidth = 48;

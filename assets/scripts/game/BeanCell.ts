@@ -165,16 +165,25 @@ export class BeanCell extends Component {
 
       tween(node)
         .to(
-          0.08,
+          0.07,
           {
-            scale: new Vec3(1.06, 1.06, 1),
+            scale: new Vec3(1.13, 0.9, 1),
           },
           {
             easing: "quadOut",
           },
         )
         .to(
-          0.1,
+          0.08,
+          {
+            scale: new Vec3(0.97, 1.07, 1),
+          },
+          {
+            easing: "sineInOut",
+          },
+        )
+        .to(
+          0.09,
           {
             scale: Vec3.ONE,
           },
