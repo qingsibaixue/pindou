@@ -204,8 +204,6 @@ export class GameController extends Component {
       this._guideLabel.string = "点一整片错色豆豆，再点下方空托盘";
     } else if (number <= 3) {
       this._guideLabel.string = "先腾出一片空间，再按底色整组换位";
-    } else if (number === 10) {
-      this._guideLabel.string = "托盘只有20格：大豆群要分两轮完成";
     } else if (number < 10) {
       this._guideLabel.string = `${level.name} · 观察轮廓，整片移动`;
     } else {
@@ -710,9 +708,7 @@ export class GameController extends Component {
       `[GameController] board -> floating color=${colorId}, count=${items.length}`,
     );
 
-    if (items.length > (this.beanTray?.capacity ?? 20)) {
-      this.setGuide(`这片有 ${items.length} 颗，托盘装不完——留下的豆会形成第二轮`);
-    } else if (this._currentLevelId === "level_001") {
+    if (this._currentLevelId === "level_001") {
       this.setGuide(`一次拿起 ${items.length} 颗！点空托盘暂存`);
     }
   }
@@ -1046,9 +1042,7 @@ export class GameController extends Component {
       this.beanTray?.compactBeans();
 
       const remaining = this.floatingQueue?.count ?? 0;
-      if (remaining > 0) {
-        this.setGuide(`托盘已装20颗，还剩 ${remaining} 颗悬浮；换手继续循环`);
-      } else if (this._currentLevelId === "level_001") {
+      if (remaining === 0 && this._currentLevelId === "level_001") {
         this.setGuide("很好，现在找能填入空白底色的整片豆豆");
       }
 
