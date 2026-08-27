@@ -65,7 +65,7 @@ export class BeanBoard extends Component {
   maxBoardWidth = 600;
 
   @property
-  maxBoardHeight = 600;
+  maxBoardHeight = 700;
 
   @property
   minCellSize = 18;
@@ -167,6 +167,15 @@ export class BeanBoard extends Component {
     if (transform) {
       transform.setContentSize(width, height);
     }
+
+    // 竖屏把额外空间留给棋盘上方：600以内保持原位置，超过后只向上生长。
+    // 这样纵向关卡能使用更大的豆豆，同时棋盘底边仍停在 y=-300，
+    // 不会压住下方引导文字和托盘。
+    this.node.setPosition(
+      this.node.position.x,
+      Math.max(0, (height - 600) * 0.5),
+      this.node.position.z,
+    );
 
     // =====================================================
     // Cell Array

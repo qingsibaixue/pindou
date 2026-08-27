@@ -3,7 +3,8 @@ import { resolve } from "node:path";
 
 const LEVEL_COUNT = 50;
 const TRAY_CAPACITY = 20;
-const MAX_BOARD_PIXELS = 600;
+const MAX_BOARD_WIDTH = 600;
+const MAX_BOARD_HEIGHT = 700;
 const MIN_CELL_SIZE = 18;
 
 function assert(condition, message) {
@@ -88,6 +89,10 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
   assert(level.name && level.guide, `${id}: missing name or guide`);
   assert(level.rows >= 2 && level.rows <= 32, `${id}: rows out of range`);
   assert(level.cols >= 2 && level.cols <= 32, `${id}: cols out of range`);
+  if (number >= 11) {
+    assert(level.cols <= 18, `${id}: portrait level is too wide (${level.cols} columns)`);
+    assert(level.rows >= level.cols, `${id}: portrait level must grow vertically (${level.rows}x${level.cols})`);
+  }
   assert(level.cells.length === level.rows * level.cols, `${id}: cell count mismatch`);
   assert(level.trayCapacity === TRAY_CAPACITY, `${id}: tray capacity must be 20`);
   assert(level.trayBeans.length === 0, `${id}: tray must start empty`);
@@ -95,10 +100,10 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
 
   const cellSize = Math.max(
     MIN_CELL_SIZE,
-    Math.min(40, Math.floor(MAX_BOARD_PIXELS / level.cols), Math.floor(MAX_BOARD_PIXELS / level.rows)),
+    Math.min(40, Math.floor(MAX_BOARD_WIDTH / level.cols), Math.floor(MAX_BOARD_HEIGHT / level.rows)),
   );
-  assert(level.cols * cellSize <= MAX_BOARD_PIXELS, `${id}: board too wide after scaling`);
-  assert(level.rows * cellSize <= MAX_BOARD_PIXELS, `${id}: board too tall after scaling`);
+  assert(level.cols * cellSize <= MAX_BOARD_WIDTH, `${id}: board too wide after scaling`);
+  assert(level.rows * cellSize <= MAX_BOARD_HEIGHT, `${id}: board too tall after scaling`);
 
   const targetCounts = new Map();
   const beanCounts = new Map();

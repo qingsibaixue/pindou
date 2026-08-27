@@ -84,7 +84,7 @@ export class GameController extends Component {
   private _winShown = false;
 
   private static readonly COMPLETED_LEVELS_KEY = "pindou_completed_levels";
-  private static readonly LEVELS_PER_PAGE = 8;
+  private static readonly LEVELS_PER_PAGE = 7;
 
   protected onLoad(): void {
     // 关卡加载由本控制器异步驱动，关闭棋盘的默认自动建关
@@ -481,28 +481,39 @@ export class GameController extends Component {
       ),
     );
 
-    const pw = 500;
-    const ph = 760;
+    const pw = 540;
+    const ph = 850;
     const panel = this.makeDialogPanel(mask, pw, ph);
 
-    const title = this.makeLabel(
-      `选择关卡  ${selectedPage + 1}/${pageCount}`,
-      30,
-      new Color(255, 255, 255, 255),
-    );
+    const title = this.makeLabel("选择关卡", 30, new Color(255, 255, 255, 255));
     title.parent = panel;
-    title.setPosition(0, ph * 0.5 - 52);
+    title.setPosition(-105, ph * 0.5 - 58);
+
+    const pagePill = new Node("PagePill");
+    pagePill.addComponent(UITransform).setContentSize(126, 38);
+    const pagePillGraphics = pagePill.addComponent(Graphics);
+    pagePillGraphics.fillColor = new Color(28, 53, 51, 220);
+    pagePillGraphics.roundRect(-63, -19, 126, 38, 19);
+    pagePillGraphics.fill();
+    const pageLabel = this.makeLabel(
+      `第 ${selectedPage + 1} / ${pageCount} 页`,
+      15,
+      new Color(184, 224, 208, 255),
+    );
+    pageLabel.parent = pagePill;
+    pagePill.parent = panel;
+    pagePill.setPosition(145, ph * 0.5 - 58);
 
     const list = new Node("LevelList");
     const listTf = list.addComponent(UITransform);
-    listTf.setContentSize(pw - 60, ph - 150);
+    listTf.setContentSize(pw - 64, 518);
     list.parent = panel;
-    list.setPosition(0, 35);
+    list.setPosition(0, 30);
 
     const layout = list.addComponent(Layout);
     layout.type = Layout.Type.VERTICAL;
     layout.resizeMode = Layout.ResizeMode.CONTAINER;
-    layout.spacingY = 8;
+    layout.spacingY = 14;
 
     if (this._levelIds.length === 0) {
       const empty = this.makeLabel("未在 resources/levels/ 发现关卡", 14, new Color(180, 180, 180, 255));
@@ -518,8 +529,9 @@ export class GameController extends Component {
         const id = this._levelIds[index];
         const unlocked = index === 0 || completed.has(this._levelIds[index - 1]);
         const titleText = this._levelTitles.get(id) || id;
-        const prefix = completed.has(id) ? "✓" : unlocked ? `${index + 1}.` : "🔒";
-        const btn = this.makePanelButton(`${prefix} ${titleText}`, () => {
+        const isCompleted = completed.has(id);
+        const isCurrent = id === this._currentLevelId;
+        const btn = this.makeLevelCard(index + 1, titleText, isCompleted, isCurrent, unlocked, () => {
           this.switchToLevel(id);
           mask.destroy();
           this._levelSelectPanel = null;
@@ -527,7 +539,7 @@ export class GameController extends Component {
           this._gameStarted = true;
           this._gameplayEnabled = true;
           this.refreshPauseButton();
-        }, unlocked, 400);
+        });
         btn.parent = list;
       }
     }
@@ -538,17 +550,17 @@ export class GameController extends Component {
       mask.destroy();
       this._levelSelectPanel = null;
       this.showLevelSelectPanel(selectedPage - 1);
-    }, selectedPage > 0, 150);
+    }, selectedPage > 0, 168, "secondary", 54);
     previousBtn.parent = panel;
-    previousBtn.setPosition(-95, -285);
+    previousBtn.setPosition(-100, -320);
 
     const nextBtn = this.makePanelButton("下一页", () => {
       mask.destroy();
       this._levelSelectPanel = null;
       this.showLevelSelectPanel(selectedPage + 1);
-    }, selectedPage + 1 < pageCount, 150);
+    }, selectedPage + 1 < pageCount, 168, "secondary", 54);
     nextBtn.parent = panel;
-    nextBtn.setPosition(95, -285);
+    nextBtn.setPosition(100, -320);
 
     const closeBtn = this.makePanelButton("返 回", () => {
       mask.destroy();
@@ -559,9 +571,9 @@ export class GameController extends Component {
       } else {
         this.showHomePanel();
       }
-    }, true, 260);
+    }, true, 360, "quiet", 52);
     closeBtn.parent = panel;
-    closeBtn.setPosition(0, -ph * 0.5 + 35);
+    closeBtn.setPosition(0, -ph * 0.5 + 42);
 
     this._levelSelectPanel = mask;
   }
@@ -571,20 +583,40 @@ export class GameController extends Component {
     callback: () => void,
     enabled = true,
     width = 240,
+    style: "primary" | "secondary" | "quiet" = "primary",
+    height = 50,
   ): Node {
     const w = width;
-    const h = 50;
+    const h = height;
     const n = new Node("PanelBtn");
     n.addComponent(UITransform).setContentSize(w, h);
 
     const g = n.addComponent(Graphics);
-    g.fillColor = enabled
-      ? new Color(70, 174, 137, 255)
-      : new Color(91, 105, 101, 255);
-    g.roundRect(-w * 0.5, -h * 0.5, w, h, 12);
+    const fill = !enabled
+      ? new Color(66, 83, 79, 255)
+      : style === "quiet"
+        ? new Color(45, 79, 74, 255)
+        : style === "secondary"
+          ? new Color(54, 113, 96, 255)
+          : new Color(66, 184, 143, 255);
+    g.fillColor = new Color(18, 39, 37, enabled ? 95 : 45);
+    g.roundRect(-w * 0.5, -h * 0.5 - 4, w, h, 14);
     g.fill();
+    g.fillColor = fill;
+    g.roundRect(-w * 0.5, -h * 0.5, w, h, 14);
+    g.fill();
+    if (style === "quiet" && enabled) {
+      g.strokeColor = new Color(102, 164, 143, 255);
+      g.lineWidth = 2;
+      g.roundRect(-w * 0.5 + 1, -h * 0.5 + 1, w - 2, h - 2, 13);
+      g.stroke();
+    }
 
-    const label = this.makeLabel(text, 18, new Color(255, 255, 255, enabled ? 255 : 170));
+    const label = this.makeLabel(
+      text,
+      18,
+      new Color(255, 255, 255, enabled ? 255 : 120),
+    );
     label.parent = n;
 
     const btn = n.addComponent(Button);
@@ -598,6 +630,106 @@ export class GameController extends Component {
     }
 
     return n;
+  }
+
+  private makeLevelCard(
+    number: number,
+    title: string,
+    completed: boolean,
+    current: boolean,
+    unlocked: boolean,
+    callback: () => void,
+  ): Node {
+    const width = 440;
+    const height = 62;
+    const card = new Node("LevelCard");
+    card.addComponent(UITransform).setContentSize(width, height);
+
+    const graphics = card.addComponent(Graphics);
+    graphics.fillColor = new Color(12, 31, 29, 70);
+    graphics.roundRect(-width * 0.5, -height * 0.5 - 4, width, height, 16);
+    graphics.fill();
+    graphics.fillColor = !unlocked
+      ? new Color(66, 84, 80, 255)
+      : current
+        ? new Color(72, 187, 147, 255)
+        : completed
+          ? new Color(218, 245, 234, 255)
+          : new Color(246, 252, 247, 255);
+    graphics.roundRect(-width * 0.5, -height * 0.5, width, height, 16);
+    graphics.fill();
+    if (current) {
+      graphics.strokeColor = new Color(160, 242, 205, 255);
+      graphics.lineWidth = 2;
+      graphics.roundRect(-width * 0.5 + 1, -height * 0.5 + 1, width - 2, height - 2, 15);
+      graphics.stroke();
+    }
+
+    const badge = new Node("LevelBadge");
+    badge.addComponent(UITransform).setContentSize(42, 42);
+    const badgeGraphics = badge.addComponent(Graphics);
+    badgeGraphics.fillColor = !unlocked
+      ? new Color(46, 64, 61, 255)
+      : current
+        ? new Color(29, 111, 84, 255)
+        : completed
+          ? new Color(72, 177, 137, 255)
+          : new Color(230, 241, 233, 255);
+    badgeGraphics.circle(0, 0, 21);
+    badgeGraphics.fill();
+    const badgeLabel = this.makeLabel(
+      String(number).padStart(2, "0"),
+      15,
+      new Color(
+        unlocked && !current && !completed ? 62 : 255,
+        unlocked && !current && !completed ? 105 : 255,
+        unlocked && !current && !completed ? 88 : 255,
+        unlocked ? 255 : 125,
+      ),
+    );
+    badgeLabel.parent = badge;
+    badge.parent = card;
+    badge.setPosition(-184, 0);
+
+    const titleLabel = this.makeLabel(
+      title,
+      19,
+      !unlocked
+        ? new Color(185, 198, 193, 130)
+        : current
+          ? new Color(255, 255, 255, 255)
+          : new Color(43, 86, 70, 255),
+    );
+    titleLabel.getComponent(UITransform)?.setContentSize(230, 40);
+    titleLabel.getComponent(Label)!.horizontalAlign = Label.HorizontalAlign.LEFT;
+    titleLabel.parent = card;
+    titleLabel.setPosition(-35, 0);
+
+    const statusText = !unlocked ? "未解锁" : current ? "当前" : completed ? "已完成" : "可挑战";
+    const statusLabel = this.makeLabel(
+      statusText,
+      14,
+      !unlocked
+        ? new Color(180, 194, 188, 130)
+        : current
+          ? new Color(229, 255, 244, 255)
+          : completed
+            ? new Color(57, 145, 111, 255)
+            : new Color(100, 135, 120, 255),
+    );
+    statusLabel.getComponent(UITransform)?.setContentSize(72, 36);
+    statusLabel.parent = card;
+    statusLabel.setPosition(174, 0);
+
+    const button = card.addComponent(Button);
+    button.transition = Button.Transition.SCALE;
+    button.zoomScale = 0.975;
+    button.target = card;
+    button.interactable = unlocked;
+    if (unlocked) {
+      card.on(Node.EventType.TOUCH_END, callback, this);
+    }
+    return card;
   }
 
   private makeLabel(text: string, fontSize: number, color: Color): Node {

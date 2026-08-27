@@ -132,54 +132,76 @@ const motifs36 = {
   tile: ["######", "######", "######", "######", "######", "######"],
 };
 
-const fiveArc = [[0, 8, 0], [3, 0, 0], [3, 16, 0], [11, 4, 0], [11, 12, 0]];
-const fiveWave = [[0, 0, 0], [2, 9, 0], [0, 18, 0], [10, 4, 0], [12, 14, 0]];
-const fiveTower = [[0, 8, 0], [7, 4, 0], [7, 12, 0], [14, 0, 0], [14, 16, 0]];
-const fiveOrbit = [[0, 8, 0], [7, 0, 0], [7, 16, 0], [14, 4, 0], [14, 12, 0]];
-const fiveStairs = [[0, 0, 0], [4, 8, 0], [8, 16, 0], [13, 8, 0], [17, 0, 0]];
+function motifBounds(motif) {
+  const points = motifPoints(motif);
+  return {
+    height: Math.max(...points.map(([row]) => row)) + 1,
+    width: Math.max(...points.map(([, col]) => col)) + 1,
+  };
+}
+
+// 后半程统一采用“纵向场景”语言：顶部聚焦、双列承接、错峰下落。
+// 不是简单旋转旧棋盘，而是用不同重心组织五块/六块图案，让手机竖屏上
+// 每颗豆保持足够大，同时还能从整体轮廓判断下一步。
+function portraitFive(motif, variant = 0) {
+  const { height: h, width: w } = motifBounds(motif);
+  const center = Math.floor(w * 0.5);
+  const styles = [
+    [[0, center], [h + 1, 0], [h + 1, w], [h * 2 + 2, 0], [h * 2 + 2, w]],
+    [[0, 0], [0, w], [h + 1, center], [h * 2 + 2, 0], [h * 2 + 2, w]],
+    [[0, 0], [2, w], [h + 2, center], [h * 2 + 3, 0], [h * 2 + 5, w]],
+    [[0, center], [h + 1, 0], [h + 3, w], [h * 2 + 4, 0], [h * 2 + 6, w]],
+  ];
+  return motifScene(motif, styles[variant % styles.length]);
+}
+
+function portraitSix(motif, variant = 0) {
+  const { height: h, width: w } = motifBounds(motif);
+  const styles = [
+    [[0, 0], [0, w], [h + 1, 0], [h + 1, w], [h * 2 + 2, 0], [h * 2 + 2, w]],
+    [[0, 0], [2, w], [h + 1, 0], [h + 3, w], [h * 2 + 2, 0], [h * 2 + 4, w]],
+    [[2, 0], [0, w], [h + 3, 0], [h + 1, w], [h * 2 + 4, 0], [h * 2 + 2, w]],
+  ];
+  return motifScene(motif, styles[variant % styles.length]);
+}
 
 const chapterThreeLayouts = [
-  motifScene(motifs30.gem, fiveArc),
-  motifScene(motifs30.orb, fiveWave),
-  motifScene(motifs30.rocket, [[0, 0, 1], [0, 10, 1], [0, 20, 1], [9, 5, 3], [9, 15, 3]]),
-  motifScene(motifs30.gem, fiveTower),
-  motifScene(motifs30.orb, fiveOrbit),
-  motifScene(motifs30.tile, [[0, 0], [0, 7], [6, 14], [12, 7], [12, 0]]),
-  motifScene(motifs30.gem, [[0, 0], [0, 9], [0, 18], [8, 4], [8, 13]]),
-  motifScene(motifs30.rocket, fiveStairs),
-  motifScene(motifs30.tile, [[0, 0], [0, 7], [0, 14], [7, 3], [7, 10]]),
-  motifScene(motifs30.orb, [[0, 9], [6, 0], [6, 18], [12, 5], [12, 13]]),
+  portraitFive(motifs30.gem, 0),
+  portraitFive(motifs30.orb, 1),
+  portraitFive(motifs30.rocket, 2),
+  portraitFive(motifs30.gem, 3),
+  portraitFive(motifs30.orb, 2),
+  portraitFive(motifs30.tile, 0),
+  portraitFive(motifs30.gem, 1),
+  portraitFive(motifs30.rocket, 3),
+  portraitFive(motifs30.tile, 2),
+  portraitFive(motifs30.orb, 3),
 ];
 
 const chapterFourLayouts = [
-  motifScene(motifs36.gem, fiveTower),
-  motifScene(motifs36.rocket, [[0, 0, 1], [0, 10, 1], [0, 20, 1], [9, 5, 3], [9, 15, 3]]),
-  motifScene(motifs36.tile, [[0, 0], [0, 7], [6, 14], [12, 7], [12, 0]]),
-  motifScene(motifs36.gem, fiveArc),
-  motifScene(motifs36.orb, fiveOrbit),
-  motifScene(motifs36.tile, [[0, 8], [7, 4], [7, 12], [14, 0], [14, 16]]),
-  motifScene(motifs36.rocket, fiveStairs),
-  motifScene(motifs36.gem, fiveWave),
-  motifScene(motifs36.orb, [[0, 0], [0, 9], [7, 4], [7, 13], [14, 8]]),
-  motifScene(motifs36.gem, [[0, 8], [7, 0], [7, 16], [14, 0], [14, 16]]),
+  portraitFive(motifs36.gem, 0),
+  portraitFive(motifs36.rocket, 1),
+  portraitFive(motifs36.tile, 2),
+  portraitFive(motifs36.gem, 3),
+  portraitFive(motifs36.orb, 1),
+  portraitFive(motifs36.tile, 0),
+  portraitFive(motifs36.rocket, 2),
+  portraitFive(motifs36.gem, 1),
+  portraitFive(motifs36.orb, 3),
+  portraitFive(motifs36.gem, 2),
 ];
 
-const sixGrid = [[0, 0, 0], [0, 9, 0], [0, 18, 0], [8, 0, 0], [8, 9, 0], [8, 18, 0]];
-const sixWave = [[0, 0, 0], [3, 9, 0], [0, 18, 0], [10, 0, 0], [13, 9, 0], [10, 18, 0]];
-const sixCrown = [[0, 0, 0], [0, 18, 0], [5, 9, 0], [13, 0, 0], [13, 9, 0], [13, 18, 0]];
-const sixRing = [[0, 8, 0], [4, 0, 0], [4, 16, 0], [12, 0, 0], [12, 16, 0], [16, 8, 0]];
-
 const chapterFiveLayouts = [
-  motifScene(motifs36.rocket, sixGrid),
-  motifScene(motifs36.gem, sixRing),
-  motifScene(motifs36.orb, sixWave),
-  motifScene(motifs36.tile, sixGrid),
-  motifScene(motifs36.gem, sixCrown),
-  motifScene(motifs36.rocket, [[0, 0, 1], [0, 10, 1], [0, 20, 1], [9, 0, 3], [9, 10, 3], [9, 20, 3]]),
-  motifScene(motifs36.orb, sixRing),
-  motifScene(motifs36.tile, [[0, 8], [7, 4], [7, 12], [14, 0], [14, 8], [14, 16]]),
-  motifScene(motifs36.gem, sixWave),
-  motifScene(motifs36.rocket, sixCrown),
+  portraitSix(motifs36.rocket, 0),
+  portraitSix(motifs36.gem, 1),
+  portraitSix(motifs36.orb, 2),
+  portraitSix(motifs36.tile, 0),
+  portraitSix(motifs36.gem, 2),
+  portraitSix(motifs36.rocket, 1),
+  portraitSix(motifs36.orb, 0),
+  portraitSix(motifs36.tile, 1),
+  portraitSix(motifs36.gem, 0),
+  portraitSix(motifs36.rocket, 2),
 ];
 
 // 竖屏构图：四节糖果车厢沿 S 形轨道向上行进。
@@ -190,39 +212,25 @@ const candyTrain = motifScene(
   [[0, 4], [4, 0], [8, 4], [12, 0]],
 );
 
-const singingWhale = composeHorizontal([
-  ["A...A", "AA.AA", ".AAA.", "..AA.", ".AAAA", "AAAAA", ".AAAA"],
-  ["......", ".BBBB.", "BBBBBB", "BBBBBB", "BBBBBB", ".BB...", "......"],
-  ["......", ".CCCC.", "CCCCCC", "CCCCCC", "CCCCCC", "...CC.", "......"],
-  [".DDDD.", "DDDDDD", "DDDDDD", "DDDDDD", ".DD...", "......", "......"],
-], 0, 1);
+const singingWhale = motifScene(
+  ["..#.....", ".#####..", "#######.", "######..", ".####...", "..#....."],
+  [[0, 0], [5, 7], [10, 0], [15, 7]],
+);
 
-const sailingBoat = [
-  ".......AA.......BB.......",
-  "......AAAA.....BBBB......",
-  ".....AAAAAA...BBBBBB.....",
-  ".....AAAAAA...BBBBBB.....",
-  ".....AAAAAA...BBBBBB.....",
-  ".........................",
-  "...CCCCCC......DDDDDD....",
-  "...CCCCCC......DDDDDD....",
-  "....CCCCCC....DDDDDD.....",
-  ".....CCCCCC..DDDDDD......",
-];
+const sailingBoat = motifScene(
+  ["...#...", "..###..", ".#####.", "#######", "..###..", ".#####."],
+  [[0, 0], [6, 7], [12, 0], [18, 7]],
+);
 
-const nightSkyline = composeHorizontal([
-  ["..A.", ".AAA", "AAAA", "AAAA", "AAAA", "AAAA", "AAAA"],
-  [".BB.", "BBBB", "BBBB", "BBBB", "BBBB", "BBBB", ".BB."],
-  [".CC.", ".CC.", "CCCC", "CCCC", "CCCC", "CCCC", "CCCC"],
-  ["..D.", "..D.", ".DD.", "DDDD", "DDDD", "DDDD", "DDDD", "DDDD"],
-], 2, 2);
+const nightSkyline = motifScene(
+  ["..##..", ".####.", "######", "##..##", "######", "..##.."],
+  [[0, 0], [4, 6], [10, 0], [14, 6]],
+);
 
-const joyfulNotes = composeHorizontal([
-  [".AAAA.", ".AAAA.", "..AAA.", "..AAA.", "AAAAA.", "AAAAA."],
-  ["BBBBBB", "BB...B", "BB...B", "B.BBBB", "B.BBBB", "B....B"],
-  [".CCCC.", ".CCCC.", ".CCC..", ".CCC..", "CCCCC.", "CCCCC."],
-  ["DDDDDD", "DD...D", "DD...D", "DDDD.D", "DDDD.D", "D....D"],
-]);
+const joyfulNotes = motifScene(
+  ["....##", "....##", ".#####", ".#####", ".##.##", "####..", ".##..."],
+  [[0, 0], [6, 6], [13, 0], [19, 6]],
+);
 
 const toweringTree = composeVertical([
   ["...A...", "..AAA..", ".AAAAA.", "AAAAAAA", ".AAAAA.", "..AAA.."],
