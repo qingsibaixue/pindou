@@ -102,6 +102,12 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
   assert(level.trayCapacity === TRAY_CAPACITY, `${id}: tray capacity must be 20`);
   assert(level.trayBeans.length === 0, `${id}: tray must start empty`);
   assert(level.cells.every((cell) => cell.beanColorId >= 0), `${id}: board has an opening bean hole`);
+  if (number >= 26) {
+    assert(
+      level.cells.every((cell) => cell.targetColorId > 0 && cell.beanColorId > 0),
+      `${id}: dense late-game board must not contain white cells`,
+    );
+  }
 
   const cellSize = Math.max(
     MIN_CELL_SIZE,
@@ -143,7 +149,7 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
 
   const cycles = cycleLengths(mapping);
   if (number >= 12) {
-    const expected = Array(level.colors.length > 5 ? 3 : 2).fill(2).join(",");
+    const expected = Array(mapping.size / 2).fill(2).join(",");
     assert(cycles.join(",") === expected, `${id}: expected cycles ${expected}, got ${cycles.join(",")}`);
   }
 
@@ -153,8 +159,8 @@ for (let number = 1; number <= LEVEL_COUNT; number++) {
 assert(new Set(levels.map(({ level }) => level.name)).size === LEVEL_COUNT, "level names must be unique");
 assert(new Set(levels.map(({ level }) => level.guide)).size === LEVEL_COUNT, "level guides must be unique");
 assert(
-  new Set(levels.map(({ level }) => level.cells.map((cell) => cell.targetColorId > 0 ? "1" : "0").join(""))).size === LEVEL_COUNT,
-  "level silhouettes must be unique",
+  new Set(levels.map(({ level }) => `${level.rows}x${level.cols}:${level.cells.map((cell) => cell.targetColorId).join("")}`)).size === LEVEL_COUNT,
+  "level color layouts must be unique",
 );
 
 console.log(`PASS: ${LEVEL_COUNT} levels validated`);

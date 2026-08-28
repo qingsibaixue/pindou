@@ -17,6 +17,14 @@ const colorThemes = [
   ["#F06F8E", "#FFB56B", "#F7DD72", "#62C4A5", "#55A8D8", "#9A77C8"],
 ];
 
+const lateColorExtensions = [
+  ["#20B7A7", "#E879C6", "#8CCB4B", "#5267C8", "#E4583E", "#2F7F72"],
+  ["#E15C9A", "#4E8ED8", "#F09B3D", "#4CB96B", "#B55FC2", "#C75A55"],
+  ["#2DAA9B", "#EF8A47", "#75B94E", "#D85B9B", "#596FD0", "#C78A32"],
+  ["#25A99A", "#D968B6", "#86BD43", "#5269C6", "#E45B3E", "#338372"],
+  ["#3AA99C", "#E46BB5", "#86BF4F", "#5D6BC5", "#E25D45", "#357F73"],
+];
+
 const levelNames = [
   "心动初遇", "春日小花", "蓝海游鱼", "许愿星光", "勇气火箭",
   "甜梦猫咪", "生日蛋糕", "彩翼蝴蝶", "闪耀皇冠", "四色回廊",
@@ -381,7 +389,10 @@ function buildHandcraftedLevel(number) {
   const permutation = Array.isArray(layout)
     ? beanPermutation(letters.length, number)
     : layout.beanMapping;
-  const theme = colorThemes[(number - 1) % colorThemes.length];
+  const themeIndex = (number - 1) % colorThemes.length;
+  const theme = number >= 26
+    ? [...colorThemes[themeIndex], ...lateColorExtensions[themeIndex]]
+    : colorThemes[themeIndex];
   const colors = [{ id: 0, hex: "#E8F7F5" }];
   for (let id = 1; id <= letters.length; id++) colors.push({ id, hex: theme[id - 1] });
 

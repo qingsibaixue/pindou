@@ -246,6 +246,129 @@ function pairedSizes(total, count, variant) {
   return [first, first, second, second, third, third];
 }
 
+function densePairedSizes(total, count, variant) {
+  if (total % 2 !== 0 || count % 2 !== 0) {
+    throw new Error(`dense board ${variant}: total and region count must be even`);
+  }
+  const pairCount = count / 2;
+  const half = total / 2;
+  const base = Math.floor(half / pairCount);
+  const sizes = new Array(pairCount).fill(base);
+  for (let i = 0; i < half - base * pairCount; i++) {
+    sizes[(i + variant) % pairCount]++;
+  }
+
+  for (let i = 0; i < Math.floor(pairCount / 2); i++) {
+    const low = (i + variant) % pairCount;
+    const high = (pairCount - 1 - i + variant) % pairCount;
+    if (low === high) continue;
+    const delta = 1 + (variant + i) % 3;
+    const transferable = Math.min(delta, sizes[high] - MIN_GROUP, MAX_GROUP - sizes[low]);
+    if (transferable > 0) {
+      sizes[low] += transferable;
+      sizes[high] -= transferable;
+    }
+  }
+
+  if (sizes.some((size) => size < MIN_GROUP || size > MAX_GROUP)) {
+    throw new Error(`dense board ${variant}: unsuitable paired sizes ${sizes.join("/")}`);
+  }
+  if (new Set(sizes).size < 2) {
+    const donor = sizes.findIndex((size) => size > MIN_GROUP);
+    const receiver = sizes.findIndex((size, index) => index !== donor && size < MAX_GROUP);
+    if (donor < 0 || receiver < 0) throw new Error(`dense board ${variant}: cannot vary sizes`);
+    sizes[donor]--;
+    sizes[receiver]++;
+  }
+  return sizes.flatMap((size) => [size, size]);
+}
+
+function rowSnake(rows, cols) {
+  const path = [];
+  for (let row = 0; row < rows; row++) {
+    const columns = Array.from({ length: cols }, (_, col) => row % 2 === 0 ? col : cols - 1 - col);
+    columns.forEach((col) => path.push(row * cols + col));
+  }
+  return path;
+}
+
+function columnSnake(rows, cols) {
+  const path = [];
+  for (let col = 0; col < cols; col++) {
+    const rowIndexes = Array.from({ length: rows }, (_, row) => col % 2 === 0 ? row : rows - 1 - row);
+    rowIndexes.forEach((row) => path.push(row * cols + col));
+  }
+  return path;
+}
+
+function spiralPath(rows, cols) {
+  const path = [];
+  let top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+  while (top <= bottom && left <= right) {
+    for (let col = left; col <= right; col++) path.push(top * cols + col);
+    top++;
+    for (let row = top; row <= bottom; row++) path.push(row * cols + right);
+    right--;
+    if (top <= bottom) {
+      for (let col = right; col >= left; col--) path.push(bottom * cols + col);
+      bottom--;
+    }
+    if (left <= right) {
+      for (let row = bottom; row >= top; row--) path.push(row * cols + left);
+      left++;
+    }
+  }
+  return path;
+}
+
+function carveDenseArtwork(rawMask, variant) {
+  const normalized = normalize(rawMask);
+  let rows = normalized.length;
+  let cols = normalized[0].length;
+  if ((rows * cols) % 2 !== 0) {
+    if (cols < 18) cols++;
+    else rows++;
+  }
+
+  const total = rows * cols;
+  const regionCount = total <= 300 ? 8 : total <= 400 ? 10 : 12;
+  const sizes = densePairedSizes(total, regionCount, variant);
+  const canvas = Array.from({ length: rows }, () => new Array(cols).fill("."));
+  let chunks = null;
+  // 仅在章节起点、恐龙里程碑和终章保留明确的螺旋节奏，
+  // 其余关卡使用不规则连通色块，避免满盘关卡再次形成机械重复。
+  if (![26, 35, 50].includes(variant)) {
+    chunks = partitionMask(new Set(Array.from({ length: total }, (_, index) => index)), sizes, cols, variant * 5);
+  }
+  if (!chunks) {
+    const pathFactories = [rowSnake, columnSnake, spiralPath];
+    const path = pathFactories[variant % pathFactories.length](rows, cols);
+    if (variant % 2 === 0) path.reverse();
+    let cursor = 0;
+    chunks = sizes.map((size) => {
+      const chunk = path.slice(cursor, cursor + size);
+      cursor += size;
+      return chunk;
+    });
+  }
+
+  chunks.forEach((chunk, index) => {
+    const letter = String.fromCharCode(65 + index);
+    chunk.forEach((cell) => {
+      canvas[Math.floor(cell / cols)][cell % cols] = letter;
+    });
+  });
+  if (chunks.flat().length !== total || canvas.some((row) => row.includes("."))) {
+    throw new Error(`dense board ${variant}: board was not fully colored`);
+  }
+
+  return {
+    art: canvas.map((row) => row.join("")),
+    beanMapping: Array.from({ length: regionCount }, (_, index) => index % 2 === 0 ? index + 2 : index),
+    designedSizes: sizes,
+  };
+}
+
 function carveArtwork(rawMask, regionCount, variant) {
   const mask = normalize(rawMask);
   const cols = mask[0].length;
@@ -320,7 +443,9 @@ function drawTheme(number) {
 export function createCreativeLayouts() {
   return Array.from({ length: 39 }, (_, index) => {
     const number = index + 12;
-    const layout = carveArtwork(drawTheme(number), "auto", number);
+    const layout = number >= 26
+      ? carveDenseArtwork(drawTheme(number), number)
+      : carveArtwork(drawTheme(number), "auto", number);
     return layout;
   });
 }
