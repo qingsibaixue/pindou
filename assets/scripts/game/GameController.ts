@@ -37,6 +37,7 @@ import { FlyingBean } from "./FlyingBean";
 import { LevelLoader } from "../data/LevelLoader";
 import { DEFAULT_LEVEL, LevelData } from "../data/LevelData";
 import { MiniGameBridge } from "../platform/MiniGameBridge";
+import { Localization } from "../i18n/Localization";
 
 const { ccclass, property } = _decorator;
 
@@ -202,19 +203,21 @@ export class GameController extends Component {
     if (!this._guideLabel) {
       return;
     }
-    if (level.guide) {
-      this._guideLabel.string = level.guide;
+    const localizedGuide = Localization.levelGuide(level.id, level.guide || "");
+    if (localizedGuide) {
+      this._guideLabel.string = localizedGuide;
       return;
     }
     const number = Number(level.id.match(/\d+/)?.[0] ?? 0);
+    const localizedName = Localization.levelTitle(level.id, level.name);
     if (number === 1) {
-      this._guideLabel.string = "点一整片错色豆豆，再点下方空托盘";
+      this._guideLabel.string = Localization.t("fallbackGuide1");
     } else if (number <= 3) {
-      this._guideLabel.string = "先腾出一片空间，再按底色整组换位";
+      this._guideLabel.string = Localization.t("fallbackGuide2");
     } else if (number < 10) {
-      this._guideLabel.string = `${level.name} · 观察轮廓，整片移动`;
+      this._guideLabel.string = Localization.t("fallbackGuideShape", { name: localizedName });
     } else {
-      this._guideLabel.string = `${level.name} · 找到颜色循环`;
+      this._guideLabel.string = Localization.t("fallbackGuideCycle", { name: localizedName });
     }
   }
 
@@ -236,7 +239,7 @@ export class GameController extends Component {
       return;
     }
 
-    const button = this.makePanelButton("暂 停", () => this.showPausePanel(), true, 112);
+    const button = this.makePanelButton(Localization.t("pause"), () => this.showPausePanel(), true, 112);
     button.name = "PauseButton";
     button.parent = root;
     button.setPosition(230, 570);
@@ -267,7 +270,7 @@ export class GameController extends Component {
     graphics.roundRect(-63, -24, 126, 48, 15);
     graphics.stroke();
 
-    const labelNode = this.makeLabel("步数 0", 18, new Color(48, 104, 85, 255));
+    const labelNode = this.makeLabel(Localization.t("steps", { count: 0 }), 18, new Color(48, 104, 85, 255));
     labelNode.parent = pill;
     this._stepLabel = labelNode.getComponent(Label);
 
@@ -277,13 +280,26 @@ export class GameController extends Component {
 
   private refreshStepDisplay(): void {
     if (this._stepLabel) {
-      this._stepLabel.string = `步数 ${this._stepCount}`;
+      this._stepLabel.string = Localization.t("steps", { count: this._stepCount });
     }
   }
 
   private addStep(): void {
     this._stepCount++;
     this.refreshStepDisplay();
+  }
+
+  private setNodeLabel(node: Node | null, text: string): void {
+    const label = node?.getComponentInChildren(Label);
+    if (label) label.string = text;
+  }
+
+  private refreshLocalizedChrome(): void {
+    this.setNodeLabel(this._pauseButton, Localization.t("pause"));
+    this.setNodeLabel(this.levelSelectButton, Localization.t("levelButton"));
+    this.refreshStepDisplay();
+    const level = this.beanBoard?.level;
+    if (level) this.refreshGuideForLevel(level);
   }
 
   private showHomePanel(): void {
@@ -307,15 +323,17 @@ export class GameController extends Component {
     }
     mask.parent = root;
 
-    const title = this.makeLabel("拼豆小世界", 48, new Color(32, 94, 75, 255));
+    const title = this.makeLabel(Localization.t("gameTitle"), 48, new Color(32, 94, 75, 255));
+    title.getComponent(UITransform)?.setContentSize(440, 64);
     title.parent = mask;
     title.setPosition(0, 190);
 
-    const subtitle = this.makeLabel("把每一颗彩豆送回正确的位置", 21, new Color(73, 116, 101, 255));
+    const subtitle = this.makeLabel(Localization.t("subtitle"), 21, new Color(73, 116, 101, 255));
+    subtitle.getComponent(UITransform)?.setContentSize(560, 48);
     subtitle.parent = mask;
     subtitle.setPosition(0, 125);
 
-    const startBtn = this.makePanelButton("开始游戏", () => {
+    const startBtn = this.makePanelButton(Localization.t("start"), () => {
       mask.active = false;
       this._gameStarted = true;
       this._gameplayEnabled = true;
@@ -324,7 +342,7 @@ export class GameController extends Component {
     startBtn.parent = mask;
     startBtn.setPosition(0, 15);
 
-    const levelsBtn = this.makePanelButton("选择关卡", () => {
+    const levelsBtn = this.makePanelButton(Localization.t("levels"), () => {
       mask.active = false;
       this.showLevelSelectPanel();
     }, true, 280);
@@ -334,13 +352,21 @@ export class GameController extends Component {
     const completed = this.getCompletedLevelIds().size;
     const currentNumber = Number(this._currentLevelId.match(/\d+/)?.[0] ?? 1);
     const progress = this.makeLabel(
-      `当前第 ${currentNumber} 关 · 已完成 ${completed} 关`,
+      Localization.t("progress", { current: currentNumber, completed }),
       18,
       new Color(92, 129, 116, 255),
     );
     progress.getComponent(UITransform)?.setContentSize(360, 40);
     progress.parent = mask;
     progress.setPosition(0, -135);
+
+    const languageBtn = this.makePanelButton(Localization.t("switchLanguage"), () => {
+      Localization.toggle();
+      this.refreshLocalizedChrome();
+      this.showHomePanel();
+    }, true, 170, "quiet", 46);
+    languageBtn.parent = mask;
+    languageBtn.setPosition(0, -205);
 
     this._homePanel = mask;
   }
@@ -361,11 +387,11 @@ export class GameController extends Component {
     mask.parent = root;
 
     const panel = this.makeDialogPanel(mask, 420, 420);
-    const title = this.makeLabel("游戏暂停", 32, new Color(255, 255, 255, 255));
+    const title = this.makeLabel(Localization.t("paused"), 32, new Color(255, 255, 255, 255));
     title.parent = panel;
     title.setPosition(0, 140);
 
-    const resumeBtn = this.makePanelButton("继续游戏", () => {
+    const resumeBtn = this.makePanelButton(Localization.t("resume"), () => {
       mask.destroy();
       this._pausePanel = null;
       this._gameplayEnabled = true;
@@ -374,7 +400,7 @@ export class GameController extends Component {
     resumeBtn.parent = panel;
     resumeBtn.setPosition(0, 55);
 
-    const restartBtn = this.makePanelButton("重新开始", () => {
+    const restartBtn = this.makePanelButton(Localization.t("restart"), () => {
       mask.destroy();
       this._pausePanel = null;
       this.restartCurrentLevel();
@@ -384,7 +410,7 @@ export class GameController extends Component {
     restartBtn.parent = panel;
     restartBtn.setPosition(0, -10);
 
-    const homeBtn = this.makePanelButton("返回主页", () => {
+    const homeBtn = this.makePanelButton(Localization.t("home"), () => {
       mask.destroy();
       this._pausePanel = null;
       this.restartCurrentLevel();
@@ -451,13 +477,15 @@ export class GameController extends Component {
       return;
     }
 
+    this.levelSelectButton = btnNode;
+
     // 窄屏按 fitHeight 裁切时仍保留左右安全边距。
     btnNode.setPosition(-230, btnNode.position.y, btnNode.position.z);
 
     const btn = btnNode.getComponent(Button);
     const label = btnNode.getComponentInChildren(Label);
     if (label) {
-      label.string = "关卡";
+      label.string = Localization.t("levelButton");
     }
 
     if (btn) {
@@ -534,7 +562,7 @@ export class GameController extends Component {
     const ph = 850;
     const panel = this.makeDialogPanel(mask, pw, ph);
 
-    const title = this.makeLabel("选择关卡", 30, new Color(255, 255, 255, 255));
+    const title = this.makeLabel(Localization.t("selectTitle"), 30, new Color(255, 255, 255, 255));
     title.parent = panel;
     title.setPosition(-105, ph * 0.5 - 58);
 
@@ -545,7 +573,7 @@ export class GameController extends Component {
     pagePillGraphics.roundRect(-63, -19, 126, 38, 19);
     pagePillGraphics.fill();
     const pageLabel = this.makeLabel(
-      `第 ${selectedPage + 1} / ${pageCount} 页`,
+      Localization.t("page", { current: selectedPage + 1, total: pageCount }),
       15,
       new Color(184, 224, 208, 255),
     );
@@ -565,7 +593,7 @@ export class GameController extends Component {
     layout.spacingY = 14;
 
     if (this._levelIds.length === 0) {
-      const empty = this.makeLabel("未在 resources/levels/ 发现关卡", 14, new Color(180, 180, 180, 255));
+      const empty = this.makeLabel(Localization.t("noLevels"), 14, new Color(180, 180, 180, 255));
       empty.parent = list;
     } else {
       const completed = this.getCompletedLevelIds();
@@ -577,7 +605,8 @@ export class GameController extends Component {
       for (let index = start; index < end; index++) {
         const id = this._levelIds[index];
         const unlocked = index === 0 || completed.has(this._levelIds[index - 1]);
-        const titleText = this._levelTitles.get(id) || id;
+        const sourceTitle = this._levelTitles.get(id) || id;
+        const titleText = Localization.levelTitle(id, sourceTitle);
         const isCompleted = completed.has(id);
         const isCurrent = id === this._currentLevelId;
         const btn = this.makeLevelCard(index + 1, titleText, isCompleted, isCurrent, unlocked, () => {
@@ -595,7 +624,7 @@ export class GameController extends Component {
 
     layout.updateLayout(true);
 
-    const previousBtn = this.makePanelButton("上一页", () => {
+    const previousBtn = this.makePanelButton(Localization.t("previous"), () => {
       mask.destroy();
       this._levelSelectPanel = null;
       this.showLevelSelectPanel(selectedPage - 1);
@@ -603,7 +632,7 @@ export class GameController extends Component {
     previousBtn.parent = panel;
     previousBtn.setPosition(-100, -320);
 
-    const nextBtn = this.makePanelButton("下一页", () => {
+    const nextBtn = this.makePanelButton(Localization.t("next"), () => {
       mask.destroy();
       this._levelSelectPanel = null;
       this.showLevelSelectPanel(selectedPage + 1);
@@ -611,7 +640,7 @@ export class GameController extends Component {
     nextBtn.parent = panel;
     nextBtn.setPosition(100, -320);
 
-    const closeBtn = this.makePanelButton("返 回", () => {
+    const closeBtn = this.makePanelButton(Localization.t("back"), () => {
       mask.destroy();
       this._levelSelectPanel = null;
       if (this._gameStarted && !this._winShown) {
@@ -754,7 +783,13 @@ export class GameController extends Component {
     titleLabel.parent = card;
     titleLabel.setPosition(-35, 0);
 
-    const statusText = !unlocked ? "未解锁" : current ? "当前" : completed ? "已完成" : "可挑战";
+    const statusText = !unlocked
+      ? Localization.t("locked")
+      : current
+        ? Localization.t("current")
+        : completed
+          ? Localization.t("completed")
+          : Localization.t("challenge");
     const statusLabel = this.makeLabel(
       statusText,
       14,
@@ -890,7 +925,7 @@ export class GameController extends Component {
     );
 
     if (this._currentLevelId === "level_001") {
-      this.setGuide(`一次拿起 ${items.length} 颗！点空托盘暂存`);
+      this.setGuide(Localization.t("picked", { count: items.length }));
     }
   }
 
@@ -1224,7 +1259,7 @@ export class GameController extends Component {
 
       const remaining = this.floatingQueue?.count ?? 0;
       if (remaining === 0 && this._currentLevelId === "level_001") {
-        this.setGuide("很好，现在找能填入空白底色的整片豆豆");
+        this.setGuide(Localization.t("tutorialSpace"));
       }
 
       this.addStep();
@@ -1349,7 +1384,7 @@ export class GameController extends Component {
 
       MiniGameBridge.vibrateLight();
       if (this._currentLevelId === "level_001") {
-        this.setGuide("成片落位！继续沿着颜色循环移动");
+        this.setGuide(Localization.t("tutorialPlaced"));
       }
 
       if (sourceGroup.sourceType === FloatingBeanSourceType.Tray) {
@@ -1785,12 +1820,12 @@ export class GameController extends Component {
     pg.fill();
 
     // 标题
-    const title = this.makeLabel("恭喜获胜！", 28, new Color(255, 215, 80, 255));
+    const title = this.makeLabel(Localization.t("win"), 28, new Color(255, 215, 80, 255));
     title.parent = panel;
     title.setPosition(0, ph * 0.5 - 55);
 
     const steps = this.makeLabel(
-      `本关步数 ${this._stepCount}`,
+      Localization.t("levelSteps", { count: this._stepCount }),
       19,
       new Color(190, 232, 215, 255),
     );
@@ -1798,17 +1833,22 @@ export class GameController extends Component {
     steps.setPosition(0, 48);
 
     const nextId = this.getNextLevelId();
-    const primaryBtn = this.makePanelButton(nextId ? "下一关" : "再来一局", () => {
-      mask.destroy();
-      nextId ? this.switchToLevel(nextId) : this.restartCurrentLevel();
-      this._gameplayEnabled = true;
-      this.refreshPauseButton();
-    }, true, 250);
+    const primaryBtn = this.makePanelButton(
+      nextId ? Localization.t("nextLevel") : Localization.t("replay"),
+      () => {
+        mask.destroy();
+        nextId ? this.switchToLevel(nextId) : this.restartCurrentLevel();
+        this._gameplayEnabled = true;
+        this.refreshPauseButton();
+      },
+      true,
+      250,
+    );
     primaryBtn.parent = panel;
     primaryBtn.setPosition(0, -20);
 
     // 选择关卡：打开关卡列表面板
-    const selectBtn = this.makePanelButton("选择关卡", () => {
+    const selectBtn = this.makePanelButton(Localization.t("levels"), () => {
       mask.destroy();
       this.showLevelSelectPanel();
     }, true, 250);

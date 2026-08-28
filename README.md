@@ -8,6 +8,7 @@ Cocos Creator 3.8.0 + TypeScript 的竖屏拼豆整理小游戏。设计分辨�
 - 50 个大豆群关卡：前 10 关为手工像素剪影，开局托盘全部为空；豆群可超过20格托盘，形成分批中转与第二轮收尾。
 - 关卡选择每页显示 8 关，共 7 页，并自动定位当前关卡。
 - 关卡顺序解锁与本地完成进度，使用 `cc.sys.localStorage`，可跨 Web/小游戏运行。
+- Web 版支持中文 / English：首次按浏览器语言自动选择，也可在首页手动切换。
 - 微信 `wx`、抖音 `tt`、快手 `ks` 的轻量能力桥：分享菜单和通关震动，无 SDK 时自动回退。
 - 独立关卡编辑器：`拼豆游戏/level-editor.html`，线上版本为 <https://pindoubianjiqi.qingsiai.site/>。
 - 多尺寸图标：`assets/art/icon/game-icon-{128,256,512,1024}.png`。
@@ -25,3 +26,6 @@ node tools/generate-levels.mjs
 ```
 
 发布前请看 [多平台发布清单](docs/MULTI_PLATFORM_RELEASE.md)。
+
+面向 itch.io、CrazyGames 和 Poki 的英文文案与上传说明见
+[Web 平台投稿包](docs/release/WEB_PORTALS_EN.md)。
