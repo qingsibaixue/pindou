@@ -78,10 +78,12 @@ export class GameController extends Component {
   private _pausePanel: Node | null = null;
   private _pauseButton: Node | null = null;
   private _guideLabel: Label | null = null;
+  private _stepLabel: Label | null = null;
   private _gameStarted = false;
   private _gameplayEnabled = false;
   private _currentLevelId = "";
   private _winShown = false;
+  private _stepCount = 0;
 
   private static readonly COMPLETED_LEVELS_KEY = "pindou_completed_levels";
   private static readonly LEVELS_PER_PAGE = 7;
@@ -130,6 +132,8 @@ export class GameController extends Component {
 
     this.createPauseButton();
 
+    this.createStepDisplay();
+
     this.createGuideLabel();
 
     // 扫描 resources/levels/ 下所有 JSON 关卡
@@ -159,6 +163,9 @@ export class GameController extends Component {
     this.beanTray.setupLevel(level);
     this._currentLevelId = level.id;
     this._winShown = false;
+    this._stepCount = 0;
+    this.refreshStepDisplay();
+    LevelLoader.setCurrentLevelId(level.id);
     this.refreshGuideForLevel(level);
 
     console.log(
@@ -243,6 +250,42 @@ export class GameController extends Component {
     }
   }
 
+  private createStepDisplay(): void {
+    const root = this.getLevelSelectRoot();
+    if (!root || this._stepLabel) {
+      return;
+    }
+
+    const pill = new Node("StepDisplay");
+    pill.addComponent(UITransform).setContentSize(128, 50);
+    const graphics = pill.addComponent(Graphics);
+    graphics.fillColor = new Color(255, 255, 255, 235);
+    graphics.roundRect(-64, -25, 128, 50, 16);
+    graphics.fill();
+    graphics.strokeColor = new Color(176, 218, 202, 255);
+    graphics.lineWidth = 2;
+    graphics.roundRect(-63, -24, 126, 48, 15);
+    graphics.stroke();
+
+    const labelNode = this.makeLabel("步数 0", 18, new Color(48, 104, 85, 255));
+    labelNode.parent = pill;
+    this._stepLabel = labelNode.getComponent(Label);
+
+    pill.parent = root;
+    pill.setPosition(0, 570);
+  }
+
+  private refreshStepDisplay(): void {
+    if (this._stepLabel) {
+      this._stepLabel.string = `步数 ${this._stepCount}`;
+    }
+  }
+
+  private addStep(): void {
+    this._stepCount++;
+    this.refreshStepDisplay();
+  }
+
   private showHomePanel(): void {
     this._gameStarted = false;
     this._gameplayEnabled = false;
@@ -289,7 +332,13 @@ export class GameController extends Component {
     levelsBtn.setPosition(0, -55);
 
     const completed = this.getCompletedLevelIds().size;
-    const progress = this.makeLabel(`已完成 ${completed} 关`, 18, new Color(92, 129, 116, 255));
+    const currentNumber = Number(this._currentLevelId.match(/\d+/)?.[0] ?? 1);
+    const progress = this.makeLabel(
+      `当前第 ${currentNumber} 关 · 已完成 ${completed} 关`,
+      18,
+      new Color(92, 129, 116, 255),
+    );
+    progress.getComponent(UITransform)?.setContentSize(360, 40);
     progress.parent = mask;
     progress.setPosition(0, -135);
 
@@ -1178,6 +1227,7 @@ export class GameController extends Component {
         this.setGuide("很好，现在找能填入空白底色的整片豆豆");
       }
 
+      this.addStep();
       this._busy = false;
 
       // 放下动作完成，接续悬浮点击的那颗托盘豆
@@ -1326,6 +1376,7 @@ export class GameController extends Component {
         }
       }
 
+      this.addStep();
       this._busy = false;
 
       this.checkGameComplete();
@@ -1723,7 +1774,7 @@ export class GameController extends Component {
     // 面板
     const panel = new Node("WinPanel");
     const pw = 320;
-    const ph = 260;
+    const ph = 310;
     const pTf = panel.addComponent(UITransform);
     pTf.setContentSize(pw, ph);
     panel.parent = mask;
@@ -1738,6 +1789,14 @@ export class GameController extends Component {
     title.parent = panel;
     title.setPosition(0, ph * 0.5 - 55);
 
+    const steps = this.makeLabel(
+      `本关步数 ${this._stepCount}`,
+      19,
+      new Color(190, 232, 215, 255),
+    );
+    steps.parent = panel;
+    steps.setPosition(0, 48);
+
     const nextId = this.getNextLevelId();
     const primaryBtn = this.makePanelButton(nextId ? "下一关" : "再来一局", () => {
       mask.destroy();
@@ -1746,7 +1805,7 @@ export class GameController extends Component {
       this.refreshPauseButton();
     }, true, 250);
     primaryBtn.parent = panel;
-    primaryBtn.setPosition(0, -8);
+    primaryBtn.setPosition(0, -20);
 
     // 选择关卡：打开关卡列表面板
     const selectBtn = this.makePanelButton("选择关卡", () => {
@@ -1754,7 +1813,7 @@ export class GameController extends Component {
       this.showLevelSelectPanel();
     }, true, 250);
     selectBtn.parent = panel;
-    selectBtn.setPosition(0, -60);
+    selectBtn.setPosition(0, -78);
   }
 
   /**
